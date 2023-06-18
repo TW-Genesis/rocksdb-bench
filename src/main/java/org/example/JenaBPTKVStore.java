@@ -13,7 +13,7 @@ public class JenaBPTKVStore implements KVStore{
     private final BPlusTree bPlusTree;
 
     public JenaBPTKVStore(JenaBPTKVStoreConfig jenaBPTKVStoreConfig) {
-        this.bPlusTree = BPlusTreeFactory.createBPTree(ComponentId.allocLocal(), new FileSet(BPT_dir, "bptree-java"), new RecordFactory(jenaBPTKVStoreConfig.kvSize(), jenaBPTKVStoreConfig.kvSize()));
+        this.bPlusTree = BPlusTreeFactory.createBPTree(ComponentId.allocLocal(), new FileSet(BPT_dir, "bptree-java"), new RecordFactory(jenaBPTKVStoreConfig.getKVSize(), jenaBPTKVStoreConfig.getKVSize()));
         this.bPlusTree.nonTransactional();
     }
 

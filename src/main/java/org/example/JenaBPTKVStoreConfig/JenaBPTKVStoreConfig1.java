@@ -9,11 +9,6 @@ public class JenaBPTKVStoreConfig1 implements JenaBPTKVStoreConfig{
     }
 
     @Override
-    public int kvSize() {
-        return 10;
-    }
-
-    @Override
     public int getKVSize() {
         return commonKVStoreConfig.getKVSize();
     }
