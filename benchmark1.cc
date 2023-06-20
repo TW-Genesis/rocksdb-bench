@@ -60,8 +60,8 @@ int main() {
   flushOptions.wait = true;
 
   // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
-  // options.IncreaseParallelism();
-  // options.OptimizeLevelStyleCompaction();
+//   options.IncreaseParallelism();
+//   options.OptimizeLevelStyleCompaction();
 
   // create the DB if it's not already present
   options.create_if_missing = true;
@@ -71,7 +71,7 @@ int main() {
   assert(s.ok());
 
   std::string value;
-  const int no_kv_pairs = 1000000;
+  const int no_kv_pairs = 10000000;
   const int kv_size = 10;
   {
     auto start = std::chrono::steady_clock::now();
@@ -84,10 +84,10 @@ int main() {
         copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
         copy_str_to_fixed_length_arr("v" + std::to_string(i), fixed_length_value, kv_size);
 
-        // batch.Put("k"+std::to_string(i), "v"+std::to_string(i));
-        s = db->Put(WriteOptions(), rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
+         batch.Put("k"+std::to_string(i), "v"+std::to_string(i));
+//        s = db->Put(WriteOptions(), rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
       }
-      // s = db->Write(WriteOptions(), &batch);
+       s = db->Write(WriteOptions(), &batch);
       // db->Flush(flushOptions);
     }
     auto end = std::chrono::steady_clock::now();

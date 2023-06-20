@@ -8,6 +8,10 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.example.JenaBPTKVStoreConfig.JenaBPTKVStoreConfig;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class JenaBPTKVStore implements KVStore{
     private final String BPT_dir = "/tmp/jena-bpt";
     private final BPlusTree bPlusTree;
@@ -33,5 +37,22 @@ public class JenaBPTKVStore implements KVStore{
         bPlusTree.clear();
     }
 
+    @Override
+    public void insertBatch(Iterator<KVPair> kvPairs) {
+        while (kvPairs.hasNext()){
+            KVPair kvPair = kvPairs.next();
+            bPlusTree.insert(new Record(kvPair.key, kvPair.value));
+        }
+    }
+
+    @Override
+    public List<byte[]> readBatch(List<byte[]> keys) {
+        ArrayList<byte[]> values = new ArrayList<>();
+        values.ensureCapacity(keys.size());
+        for(int i=0;i<keys.size();i++){
+            values.add(bPlusTree.find(new Record(keys.get(i), null)).getValue());
+        }
+        return values;
+    }
 
 }
