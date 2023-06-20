@@ -84,7 +84,7 @@ int main() {
         copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
         copy_str_to_fixed_length_arr("v" + std::to_string(i), fixed_length_value, kv_size);
 
-         batch.Put("k"+std::to_string(i), "v"+std::to_string(i));
+         batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
 //        s = db->Put(WriteOptions(), rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
       }
        s = db->Write(WriteOptions(), &batch);
