@@ -35,6 +35,7 @@ public class JenaBPTKVStore implements KVStore{
     @Override
     public void clean() {
         bPlusTree.clear();
+        bPlusTree.close();
     }
 
     @Override

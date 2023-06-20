@@ -114,6 +114,8 @@ int main() {
     std::cout << "Elapsed time for read: " << duration.count()
               << " milliseconds" << std::endl;
   }
+  db->Close();
+  rocksdb::DestroyDB(db->GetName(), options);
   delete db;
 
   return 0;
