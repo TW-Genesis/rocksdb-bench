@@ -36,7 +36,7 @@ public class TestStress {
                 TestUtils.copyStrToFixedLengthArr("v" + i, fixedLengthValue);
                 kvStore.insert(fixedLengthKey, fixedLengthValue);
             }
-        }, "insertion");
+        }, "write");
 
         TestUtils.measureExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
@@ -44,7 +44,7 @@ public class TestStress {
                 TestUtils.copyStrToFixedLengthArr("k" + i, fixedLengthKey);
                 kvStore.find(fixedLengthKey);
             }
-        }, "search");
+        }, "read");
     }
 
 }

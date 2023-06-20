@@ -32,7 +32,7 @@ public class TestBatchedReadQuery {
     private void batchedReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()));
-        }, "insertion");
+        }, "batch write");
 
         TestUtils.measureExecutionTime(() -> {
             ArrayList<byte[]> keys = new ArrayList<>();
@@ -43,7 +43,7 @@ public class TestBatchedReadQuery {
                 keys.add(fixedLengthKey);
             }
             kvStore.readBatch(keys);
-        }, "search");
+        }, "batch read");
     }
 
 }

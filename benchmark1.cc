@@ -93,7 +93,7 @@ int main() {
     auto end = std::chrono::steady_clock::now();
     auto duration =
         std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Elapsed time for write: " << duration.count()
+    std::cout << "Elapsed time for batch write: " << duration.count()
               << " milliseconds" << std::endl;
   }
 

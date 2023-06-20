@@ -32,7 +32,7 @@ public class TestRangeQuery {
     private void rangeQueryTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()));
-        }, "insertion");
+        }, "batch write");
 
         TestUtils.measureExecutionTime(() -> {
             byte[] minKey = new byte[commonKVStoreConfig.getKVSize()];
@@ -40,7 +40,7 @@ public class TestRangeQuery {
             byte[] maxKey = new byte[commonKVStoreConfig.getKVSize()];
             TestUtils.copyStrToFixedLengthArr("k" + noOfPairs, maxKey);
             List<byte[]> values =  kvStore.rangeQuery(minKey, maxKey);
-        }, "search");
+        }, "range read");
     }
 
 }
