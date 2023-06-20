@@ -10,4 +10,6 @@ public interface KVStore {
 
     void insertBatch(Iterator<KVPair> kvPairs);
     List<byte[]> readBatch(List<byte[]> keys);
+
+    List<byte[]> rangeQuery(byte[] minKey, byte[] maxKey);
 }

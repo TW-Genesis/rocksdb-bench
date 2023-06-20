@@ -55,4 +55,17 @@ public class JenaBPTKVStore implements KVStore{
         return values;
     }
 
+    @Override
+    public List<byte[]> rangeQuery(byte[] minKey, byte[] maxKey) {
+
+        ArrayList<byte[]> values = new ArrayList<>();
+
+        Iterator<Record> iterator = bPlusTree.iterator(new Record(minKey, null), new Record(maxKey, null));
+
+        while (iterator.hasNext()) {
+            values.add(iterator.next().getValue());
+        }
+
+        return values;
+    }
 }

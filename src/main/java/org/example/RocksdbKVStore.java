@@ -3,8 +3,11 @@ package org.example;
 import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig;
 import org.rocksdb.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.example.Utils.compareKeys;
 
 public class RocksdbKVStore implements KVStore{
     private final String db_path = "/tmp/rocksdb-java";
@@ -72,6 +75,28 @@ public class RocksdbKVStore implements KVStore{
         } catch (RocksDBException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<byte[]> rangeQuery(byte[] minKey, byte[] maxKey) {
+        ReadOptions readOptions = new ReadOptions();
+        readOptions.setFillCache(false); // Optional: Set cache behavior
+
+        RocksIterator iterator = db.newIterator(readOptions);
+        iterator.seek(minKey);
+
+        ArrayList<byte[]> values = new ArrayList<>();
+        while (iterator.isValid()) {
+            byte[] key = iterator.key();
+            if (compareKeys(key, minKey) >= 0 && compareKeys(key, maxKey) < 0) {
+                byte[] value = iterator.value();
+                values.add(value);
+            }
+            iterator.next();
+        }
+
+        iterator.close();
+        return values;
     }
 
 
