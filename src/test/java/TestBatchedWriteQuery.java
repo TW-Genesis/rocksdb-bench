@@ -12,7 +12,7 @@ public class TestBatchedWriteQuery {
     private final int noOfPairs = 10000000;
 
     @Test
-    public void jenaBPTStressTest() {
+    public void jenaBPTBatchWriteTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
         batchedWriteTest(kvStore, commonKVStoreConfig);
@@ -20,7 +20,7 @@ public class TestBatchedWriteQuery {
     }
 
     @Test
-    void RocksDBStressTest() throws RocksDBException {
+    void RocksDBBatchWriteTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
         batchedWriteTest(kvStore, commonKVStoreConfig);

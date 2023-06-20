@@ -14,7 +14,7 @@ public class TestRangeQuery {
     private final int noOfPairs = 10000000;
 
     @Test
-    public void jenaBPTStressTest() {
+    public void jenaBPTRangeQueryTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
         rangeQueryTest(kvStore, commonKVStoreConfig);
@@ -22,7 +22,7 @@ public class TestRangeQuery {
     }
 
     @Test
-    void RocksDBStressTest() throws RocksDBException {
+    void RocksDBRangeQueryTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
         rangeQueryTest(kvStore, commonKVStoreConfig);
