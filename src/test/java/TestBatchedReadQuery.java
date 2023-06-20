@@ -8,16 +8,16 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class TestBatchedRangeTransaction {
-    private final int noOfPairs = 10000000;
+public class TestBatchedReadQuery {
+    private final int noOfPairs = 5000000;
 
     @Test
     public void jenaBPTStressTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
-        rangeQueryTest(kvStore, commonKVStoreConfig);
+        batchedReadTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
 
@@ -25,21 +25,24 @@ public class TestBatchedRangeTransaction {
     void RocksDBStressTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
-        rangeQueryTest(kvStore, commonKVStoreConfig);
+        batchedReadTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
 
-    private void rangeQueryTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
+    private void batchedReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()));
         }, "insertion");
 
         TestUtils.measureExecutionTime(() -> {
-            byte[] minKey = new byte[commonKVStoreConfig.getKVSize()];
-            TestUtils.copyStrToFixedLengthArr("k" + 1, minKey);
-            byte[] maxKey = new byte[commonKVStoreConfig.getKVSize()];
-            TestUtils.copyStrToFixedLengthArr("k" + noOfPairs, maxKey);
-            List<byte[]> values =  kvStore.rangeQuery(minKey, maxKey);
+            ArrayList<byte[]> keys = new ArrayList<>();
+            keys.ensureCapacity(noOfPairs);
+            for (int i = 1; i <= noOfPairs; i++) {
+                byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
+                TestUtils.copyStrToFixedLengthArr("k" + i, fixedLengthKey);
+                keys.add(fixedLengthKey);
+            }
+            kvStore.readBatch(keys);
         }, "search");
     }
 

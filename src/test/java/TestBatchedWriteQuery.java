@@ -8,7 +8,7 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
-public class TestBatchedWriteTransaction {
+public class TestBatchedWriteQuery {
     private final int noOfPairs = 10000000;
 
     @Test
