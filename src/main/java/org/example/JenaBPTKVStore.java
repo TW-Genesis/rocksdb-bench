@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class JenaBPTKVStore implements KVStore{
-    private final String BPT_dir = "/tmp/jena-bpt";
+    private final String BPT_dir = "/home/e4r/test-database/jena-bpt";
     private final BPlusTree bPlusTree;
 
     public JenaBPTKVStore(JenaBPTKVStoreConfig jenaBPTKVStoreConfig) {

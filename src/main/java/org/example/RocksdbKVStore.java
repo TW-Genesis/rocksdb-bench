@@ -10,7 +10,7 @@ import java.util.List;
 import static org.example.Utils.compareKeys;
 
 public class RocksdbKVStore implements KVStore{
-    private final String db_path = "/tmp/rocksdb-java";
+    private final String db_path = "/home/e4r/test-database/rocksdb-java";
     private final Options options;
     private final RocksDB db;
 

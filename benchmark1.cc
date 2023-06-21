@@ -19,7 +19,7 @@ using ROCKSDB_NAMESPACE::WriteOptions;
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_simple_example";
 #else
-std::string kDBPath = "/tmp/rocksdb-cpp";
+std::string kDBPath = "/home/e4r/test-database/rocksdb-cpp";
 #endif
 
 void copy_str_to_fixed_length_arr(std::string str, char fixed_len_arr[],
