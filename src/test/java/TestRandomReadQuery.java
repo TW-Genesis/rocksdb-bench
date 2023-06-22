@@ -14,7 +14,7 @@ public class TestRandomReadQuery {
     private final int noOfPairs = 10000000;
 
     @Test
-    public void jenaBPTBatchReadTest() {
+    public void jenaBPTRandomReadTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
         randomReadTest(kvStore, commonKVStoreConfig);
@@ -22,7 +22,7 @@ public class TestRandomReadQuery {
     }
 
     @Test
-    void RocksDBBatchReadTest() throws RocksDBException {
+    void RocksDBRandomReadTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         KVStore kvStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
         randomReadTest(kvStore, commonKVStoreConfig);
