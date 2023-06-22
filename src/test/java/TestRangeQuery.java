@@ -39,7 +39,7 @@ public class TestRangeQuery {
             TestUtils.copyStrToFixedLengthArr("k" + 1, minKey);
             byte[] maxKey = new byte[commonKVStoreConfig.getKVSize()];
             TestUtils.copyStrToFixedLengthArr("k" + noOfPairs, maxKey);
-            List<byte[]> values =  kvStore.rangeQuery(minKey, maxKey);
+            kvStore.rangeQuery(minKey, maxKey);
         }, "range read");
     }
 

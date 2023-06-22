@@ -47,26 +47,18 @@ public class JenaBPTKVStore implements KVStore{
     }
 
     @Override
-    public List<byte[]> readBatch(List<byte[]> keys) {
-        ArrayList<byte[]> values = new ArrayList<>();
-        values.ensureCapacity(keys.size());
-        for(int i=0;i<keys.size();i++){
-            values.add(bPlusTree.find(new Record(keys.get(i), null)).getValue());
+    public void readBatch(List<byte[]> keys) {
+        for (int i = 0; i < keys.size(); i++) {
+            bPlusTree.find(new Record(keys.get(i), null)).getValue();
         }
-        return values;
     }
 
     @Override
-    public List<byte[]> rangeQuery(byte[] minKey, byte[] maxKey) {
-
-        ArrayList<byte[]> values = new ArrayList<>();
-
+    public void rangeQuery(byte[] minKey, byte[] maxKey) {
         Iterator<Record> iterator = bPlusTree.iterator(new Record(minKey, null), new Record(maxKey, null));
 
         while (iterator.hasNext()) {
-            values.add(iterator.next().getValue());
+            iterator.next().getValue();
         }
-
-        return values;
     }
 }
