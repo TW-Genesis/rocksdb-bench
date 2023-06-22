@@ -8,7 +8,6 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.example.JenaBPTKVStoreConfig.JenaBPTKVStoreConfig;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
