@@ -72,7 +72,7 @@ int main() {
 
   std::string value;
   const int no_kv_pairs = 10000000;
-  const int kv_size = 10;
+  const int kv_size = 12;
   {
     auto start = std::chrono::steady_clock::now();
     {
