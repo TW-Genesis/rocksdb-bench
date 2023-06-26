@@ -50,11 +50,10 @@ public class RocksdbKVStore implements KVStore {
     @Override
     public void insertBatch(Iterator<KVPair> kvPairs, int batchSize) {
         try {
-            int noOfBatches = Utils.keyValueCount(kvPairs) / batchSize;
-            for (int batchNumber = 0; batchNumber < noOfBatches; batchNumber++) {
+            do {
                 int batchKVPairs = 0;
                 WriteBatch batch = new WriteBatch();
-                while (kvPairs.hasNext() && batchKVPairs <= batchSize) {
+                while (kvPairs.hasNext() && batchKVPairs < batchSize) {
                     KVPair kvPair = kvPairs.next();
                     try {
                         batch.put(kvPair.key, kvPair.value);
@@ -68,7 +67,7 @@ public class RocksdbKVStore implements KVStore {
                 } catch (RocksDBException e) {
                     throw new RuntimeException(e);
                 }
-            }
+            } while (kvPairs.hasNext());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -101,6 +100,4 @@ public class RocksdbKVStore implements KVStore {
 
         iterator.close();
     }
-
-
 }
