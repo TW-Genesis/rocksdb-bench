@@ -48,22 +48,29 @@ public class RocksdbKVStore implements KVStore {
     }
 
     @Override
-    public void insertBatch(Iterator<KVPair> kvPairs) {
-        try (final WriteBatch batch = new WriteBatch()) {
-            while (kvPairs.hasNext()){
-                KVPair kvPair = kvPairs.next();
+    public void insertBatch(Iterator<KVPair> kvPairs, int batchSize) {
+        try {
+            int noOfBatches = Utils.keyValueCount(kvPairs) / batchSize;
+            for (int batchNumber = 0; batchNumber < noOfBatches; batchNumber++) {
+                int batchKVPairs = 0;
+                WriteBatch batch = new WriteBatch();
+                while (kvPairs.hasNext() && batchKVPairs <= batchSize) {
+                    KVPair kvPair = kvPairs.next();
+                    try {
+                        batch.put(kvPair.key, kvPair.value);
+                        batchKVPairs++;
+                    } catch (RocksDBException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 try {
-                    batch.put(kvPair.key, kvPair.value);
+                    db.write(new WriteOptions(), batch);
                 } catch (RocksDBException e) {
                     throw new RuntimeException(e);
                 }
             }
-
-            try {
-                db.write(new WriteOptions(), batch);
-            } catch (RocksDBException e) {
-                throw new RuntimeException(e);
-            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 

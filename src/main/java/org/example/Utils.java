@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Iterator;
+
 public class Utils {
     public static int compareKeys(byte[] key1, byte[] key2) {
         if(key1.length != key2.length)
@@ -11,5 +13,14 @@ public class Utils {
             }
         }
         return 0;
+    }
+
+    public static int keyValueCount(Iterator<KVPair> kvPairs) {
+        int noOfPairs = 0;
+        while (kvPairs.hasNext()) {
+            noOfPairs++;
+            kvPairs.next();
+        }
+        return noOfPairs;
     }
 }

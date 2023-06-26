@@ -1,8 +1,12 @@
 import org.example.KVPair;
+import org.example.Utils;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Iterator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtils {
     public static void copyStrToFixedLengthArr(String str, byte[] fixedLenArr) {
@@ -57,4 +61,12 @@ public class TestUtils {
         }
     }
 
+    @Test
+    void shouldReturnThousandAsCountOfKeyValuePairs() {
+        int keyValuePairs = 1000;
+        Iterator<KVPair> kvPairIterator = new TestUtils.IncrementalKVGenerator(1, keyValuePairs + 1, 12);
+        int actualOutput = Utils.keyValueCount(kvPairIterator);
+
+        assertEquals(1000, actualOutput);
+    }
 }

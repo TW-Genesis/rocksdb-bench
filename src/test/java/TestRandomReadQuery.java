@@ -31,8 +31,8 @@ public class TestRandomReadQuery {
 
     private void randomReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs + 1, commonKVStoreConfig.getKVSize()));
-        }, "insertion");
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs + 1, commonKVStoreConfig.getKVSize()),10000);
+        }, "batch write of batch size 10000");
         Random random = new Random();
 
         TestUtils.measureExecutionTime(() -> {

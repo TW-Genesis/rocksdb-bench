@@ -8,7 +8,7 @@ public interface KVStore {
     byte[] find(byte[] key);
     void clean();
 
-    void insertBatch(Iterator<KVPair> kvPairs);
+    void insertBatch(Iterator<KVPair> kvPairs,int batchSize);
     void readBatch(List<byte[]> keys);
 
     void rangeQuery(byte[] minKey, byte[] maxKey);

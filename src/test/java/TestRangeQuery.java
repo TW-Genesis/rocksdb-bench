@@ -31,8 +31,8 @@ public class TestRangeQuery {
 
     private void rangeQueryTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()));
-        }, "batch write");
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()),10000);
+        }, "batch write of batch size 10000");
 
         TestUtils.measureExecutionTime(() -> {
             byte[] minKey = new byte[commonKVStoreConfig.getKVSize()];

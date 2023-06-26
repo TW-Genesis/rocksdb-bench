@@ -38,8 +38,8 @@ public class JenaBPTKVStore implements KVStore{
     }
 
     @Override
-    public void insertBatch(Iterator<KVPair> kvPairs) {
-        while (kvPairs.hasNext()){
+    public void insertBatch(Iterator<KVPair> kvPairs, int batchSize) {
+        while (kvPairs.hasNext()) {
             KVPair kvPair = kvPairs.next();
             bPlusTree.insert(new Record(kvPair.key, kvPair.value));
         }
