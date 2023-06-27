@@ -95,31 +95,29 @@ int main() {
   Status s = DB::Open(options, kDBPath, &db);
   assert(s.ok());
 
-  const int no_kv_pairs = 100000000;
-  std::string value;
+  const int no_kv_pairs = 10000000;
+  //Batch Write 1k
   {
   const int batchSize= 1000;
-  batch_write( db,options, batchSize,no_kv_pairs);
+  batch_write(db, options, batchSize, no_kv_pairs);
   }
-
+  //Batch Write 10k
   {
   const int batchSize= 10000;
-  batch_write( db,options, batchSize,no_kv_pairs);
+  batch_write(db, options, batchSize, no_kv_pairs);
   }
-
+  //Write
   {
       auto start = std::chrono::steady_clock::now();
       {
-        WriteBatch batch;
         for (int i = 1; i <= no_kv_pairs; i++) {
           char fixed_length_key[kv_size];
           char fixed_length_value[kv_size];
           copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
           copy_str_to_fixed_length_arr("v" + std::to_string(i), fixed_length_value, kv_size);
 
-           batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
+          db->Put(WriteOptions(),rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
         }
-         s = db->Write(WriteOptions(), &batch);
       }
       auto end = std::chrono::steady_clock::now();
       auto duration =
@@ -128,28 +126,33 @@ int main() {
                 << " milliseconds" << std::endl;
     }
 
-//  {
-//     auto start = std::chrono::steady_clock::now();
-//
-//        char minKey[kv_size];
-//        char maxKey[kv_size];
-//        copy_str_to_fixed_length_arr("k" + std::to_string(1), minKey, kv_size);
-//        copy_str_to_fixed_length_arr("k" + std::to_string(no_kv_pairs), maxKey, kv_size);
-//
-//        rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
-//        it->Seek(minKey);
-//
-//        for (; it->Valid() && it->key().ToString() <= maxKey; it->Next()) {
-//            std::string value = it->value().ToString();
-//        }
-//
-//        auto end = std::chrono::steady_clock::now();
-//        auto duration =
-//        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-//        std::cout << "Elapsed time for range read: " << duration.count()
-//                 << " milliseconds" << std::endl;
-//  }
+//Range Query
+  {
+        auto start = std::chrono::steady_clock::now();
 
+        char minKey[kv_size];
+        char maxKey[kv_size];
+        copy_str_to_fixed_length_arr("k" + std::to_string(1), minKey, kv_size);
+        copy_str_to_fixed_length_arr("k" + std::to_string(no_kv_pairs), maxKey, kv_size);
+
+        std::string minKeyString(minKey, kv_size);
+        std::string maxKeyString(maxKey, kv_size);
+
+        rocksdb::Iterator* it = db->NewIterator(ReadOptions());
+        it->Seek(rocksdb::Slice(minKeyString));
+
+        for (; it->Valid() && it->key().ToString() <= maxKeyString; it->Next()) {
+            std::string value = it->value().ToString();
+        }
+
+        auto end = std::chrono::steady_clock::now();
+        auto duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        std::cout << "Elapsed time for range query: " << duration.count()
+                 << " milliseconds" << std::endl;
+  }
+
+//Read
   {
     auto start = std::chrono::steady_clock::now();
     {
@@ -166,6 +169,27 @@ int main() {
         std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::cout << "Elapsed time for read: " << duration.count()
               << " milliseconds" << std::endl;
+  }
+  //Batch Read
+  {
+      std::vector<rocksdb::Slice> keys;
+      std::vector<std::string> values;
+
+      auto start = std::chrono::steady_clock::now();
+      {
+        for (int i = 1; i <= no_kv_pairs; i++) {
+          char fixed_length_key[kv_size];
+          copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
+          keys.push_back(rocksdb::Slice(fixed_length_key));
+        }
+      }
+
+      std::vector<rocksdb::Status> readStatus  = db->MultiGet(ReadOptions(), keys, &values);
+      auto end = std::chrono::steady_clock::now();
+      auto duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+      std::cout << "Elapsed time for batch read: " << duration.count()
+                << " milliseconds" << std::endl;
   }
   db->Close();
   rocksdb::DestroyDB(db->GetName(), options);
