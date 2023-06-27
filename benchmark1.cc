@@ -22,6 +22,7 @@ std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_simple_example";
 std::string kDBPath = "/home/e4r/test-database/rocksdb-cpp";
 #endif
 
+const int kv_size =12;
 void copy_str_to_fixed_length_arr(std::string str, char fixed_len_arr[],
                                   size_t arr_size) {
   for (int i = 0; i < arr_size; i++) {
@@ -53,49 +54,101 @@ std::string convert_to_string(char arr[], int size)
     return s;
 }
 
+void batch_write(DB* db,Options options,int batchSize,int no_kv_pairs){
+   auto start = std::chrono::steady_clock::now();
+    {
+    int pair_count = 1;
+    do {
+           int batchKVPairs = 0;
+           WriteBatch batch;
+           while (pair_count<=no_kv_pairs && batchKVPairs < batchSize) {
+                char fixed_length_key[kv_size];
+                char fixed_length_value[kv_size];
+                copy_str_to_fixed_length_arr("k" + std::to_string(pair_count), fixed_length_key, kv_size);
+                copy_str_to_fixed_length_arr("v" + std::to_string(pair_count), fixed_length_value, kv_size);
+
+                batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
+                pair_count++;
+                batchKVPairs++;
+           }
+           db->Write(WriteOptions(), &batch);
+    } while (pair_count<=no_kv_pairs);
+
+    }
+    auto end = std::chrono::steady_clock::now();
+    auto duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Elapsed time for batch write of batch size "<< batchSize << " for " << no_kv_pairs<< " pairs :"  << duration.count()
+              << " milliseconds" << std::endl;
+    rocksdb::DestroyDB(db->GetName(), options);
+}
+
 int main() {
   DB* db;
   Options options;
   rocksdb::FlushOptions flushOptions;
   flushOptions.wait = true;
 
-  // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
-//   options.IncreaseParallelism();
-//   options.OptimizeLevelStyleCompaction();
-
-  // create the DB if it's not already present
   options.create_if_missing = true;
 
   // open DB
   Status s = DB::Open(options, kDBPath, &db);
   assert(s.ok());
 
+  const int no_kv_pairs = 100000000;
   std::string value;
-  const int no_kv_pairs = 10000000;
-  const int kv_size = 12;
   {
-    auto start = std::chrono::steady_clock::now();
-    {
-      WriteBatch batch;
-      // batch.Delete("key1");
-      for (int i = 1; i <= no_kv_pairs; i++) {
-        char fixed_length_key[kv_size];
-        char fixed_length_value[kv_size];
-        copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
-        copy_str_to_fixed_length_arr("v" + std::to_string(i), fixed_length_value, kv_size);
-
-         batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
-//        s = db->Put(WriteOptions(), rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
-      }
-       s = db->Write(WriteOptions(), &batch);
-      // db->Flush(flushOptions);
-    }
-    auto end = std::chrono::steady_clock::now();
-    auto duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Elapsed time for batch write: " << duration.count()
-              << " milliseconds" << std::endl;
+  const int batchSize= 1000;
+  batch_write( db,options, batchSize,no_kv_pairs);
   }
+
+  {
+  const int batchSize= 10000;
+  batch_write( db,options, batchSize,no_kv_pairs);
+  }
+
+  {
+      auto start = std::chrono::steady_clock::now();
+      {
+        WriteBatch batch;
+        for (int i = 1; i <= no_kv_pairs; i++) {
+          char fixed_length_key[kv_size];
+          char fixed_length_value[kv_size];
+          copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
+          copy_str_to_fixed_length_arr("v" + std::to_string(i), fixed_length_value, kv_size);
+
+           batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
+        }
+         s = db->Write(WriteOptions(), &batch);
+      }
+      auto end = std::chrono::steady_clock::now();
+      auto duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+      std::cout << "Elapsed time for write: " << duration.count()
+                << " milliseconds" << std::endl;
+    }
+
+//  {
+//     auto start = std::chrono::steady_clock::now();
+//
+//        char minKey[kv_size];
+//        char maxKey[kv_size];
+//        copy_str_to_fixed_length_arr("k" + std::to_string(1), minKey, kv_size);
+//        copy_str_to_fixed_length_arr("k" + std::to_string(no_kv_pairs), maxKey, kv_size);
+//
+//        rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
+//        it->Seek(minKey);
+//
+//        for (; it->Valid() && it->key().ToString() <= maxKey; it->Next()) {
+//            std::string value = it->value().ToString();
+//        }
+//
+//        auto end = std::chrono::steady_clock::now();
+//        auto duration =
+//        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+//        std::cout << "Elapsed time for range read: " << duration.count()
+//                 << " milliseconds" << std::endl;
+//  }
 
   {
     auto start = std::chrono::steady_clock::now();
