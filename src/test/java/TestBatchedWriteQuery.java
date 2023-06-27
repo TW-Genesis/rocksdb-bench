@@ -29,11 +29,11 @@ public class TestBatchedWriteQuery {
 
     private void batchedWriteTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()),1000);
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()),1000);
         }, "batch write of batch size 1000");
 
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()),10000);
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()),10000);
         }, "batch write of batch size 10000");
     }
 

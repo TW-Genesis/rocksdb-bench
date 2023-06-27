@@ -31,14 +31,14 @@ public class TestRandomReadQuery {
 
     private void randomReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs + 1, commonKVStoreConfig.getKVSize()),10000);
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), 10000);
         }, "batch write of batch size 10000");
         Random random = new Random();
 
         TestUtils.measureExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
                 byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
-                TestUtils.copyStrToFixedLengthArr("k" + (random.nextInt(noOfPairs) + 1), fixedLengthKey);
+                TestUtils.copyStrToFixedLengthArr("k" + (random.nextInt(noOfPairs)), fixedLengthKey);
                 kvStore.find(fixedLengthKey);
             }
         }, "random search");

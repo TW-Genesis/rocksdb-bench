@@ -31,7 +31,7 @@ public class TestBatchedReadQuery {
 
     private void batchedReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs+1, commonKVStoreConfig.getKVSize()),10000);
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), 100000000);
         }, "batch write of batch size 10000");
 
         TestUtils.measureExecutionTime(() -> {
