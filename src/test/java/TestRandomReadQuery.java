@@ -1,5 +1,6 @@
 import org.example.CommonKVStoreConfig.CommonKVStoreConfig;
 import org.example.CommonKVStoreConfig.CommonKVStoreConfig1;
+import org.example.CommonKVStoreConfig.CommonKVStoreConfig2;
 import org.example.JenaBPTKVStore;
 import org.example.JenaBPTKVStoreConfig.JenaBPTKVStoreConfig1;
 import org.example.KVStore;
@@ -24,6 +25,23 @@ public class TestRandomReadQuery {
     @Test
     void RocksDBRandomReadTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
+        RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
+        randomReadTest(rocksdbKVStore, commonKVStoreConfig);
+        TestUtils.dumpStats(rocksdbKVStore, "random-read-query.rocksdbstats");
+        rocksdbKVStore.clean();
+    }
+
+    @Test
+    public void jenaBPTRandomReadIncreasedKVSizeTest() {
+        CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig2();
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        randomReadTest(kvStore, commonKVStoreConfig);
+        kvStore.clean();
+    }
+
+    @Test
+    void RocksDBRandomReadIncreasedKVSizeTest() throws RocksDBException {
+        CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig2();
         RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
         randomReadTest(rocksdbKVStore, commonKVStoreConfig);
         TestUtils.dumpStats(rocksdbKVStore, "random-read-query.rocksdbstats");
