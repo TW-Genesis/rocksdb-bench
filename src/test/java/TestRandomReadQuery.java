@@ -8,7 +8,6 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
-import java.io.File;
 import java.util.Random;
 
 public class TestRandomReadQuery {
@@ -41,7 +40,7 @@ public class TestRandomReadQuery {
         TestUtils.measureExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
                 byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
-                TestUtils.copyStrToFixedLengthArr("k" + (random.nextInt(noOfPairs)), fixedLengthKey);
+                TestUtils.copyStrToFixedLengthArr("k" +  ( random.nextInt(noOfPairs) + 1), fixedLengthKey);
                 kvStore.find(fixedLengthKey);
             }
         }, "random search");
