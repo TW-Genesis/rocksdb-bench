@@ -8,11 +8,11 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class TestBatchedReadQuery {
-    private final int noOfPairs = 5000000;
-
+    private final int noOfPairs = 10000000;
     @Test
     public void jenaBPTBatchReadTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
@@ -22,17 +22,19 @@ public class TestBatchedReadQuery {
     }
 
     @Test
-    void RocksDBBatchReadTest() throws RocksDBException {
+    void RocksDBBatchReadTest() throws RocksDBException, IOException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
-        batchedReadTest(kvStore, commonKVStoreConfig);
-        kvStore.clean();
+        RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
+        batchedReadTest(rocksdbKVStore, commonKVStoreConfig);
+        TestUtils.dumpStats(rocksdbKVStore, "batched-reads.rocksdbstats");
+        rocksdbKVStore.clean();
     }
 
     private void batchedReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
+        int batchSize = 100000000;
         TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), 100000000);
-        }, "batch write of batch size 10000");
+            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), batchSize);
+        }, "batch write of batch size "+ batchSize);
 
         TestUtils.measureExecutionTime(() -> {
             ArrayList<byte[]> keys = new ArrayList<>();

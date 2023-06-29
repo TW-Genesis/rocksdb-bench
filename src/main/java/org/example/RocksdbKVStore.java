@@ -3,6 +3,9 @@ package org.example;
 import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig;
 import org.rocksdb.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,11 +14,14 @@ import static org.example.Utils.compareKeys;
 public class RocksdbKVStore implements KVStore {
     private final String db_path = "/home/e4r/test-database/rocksdb-java";
     private final Options options;
+    private final Statistics statistics;
     private final RocksDB db;
 
     public RocksdbKVStore(RocksdbKVStoreConfig rocksdbKVStoreConfig) throws RocksDBException {
         RocksDB.loadLibrary();
         this.options = rocksdbKVStoreConfig.getOption();
+        this.statistics = new Statistics();
+        this.options.setStatistics(statistics);
         this.db = RocksDB.open(this.options, db_path);
     }
 
@@ -44,6 +50,15 @@ public class RocksdbKVStore implements KVStore {
             RocksDB.destroyDB(db_path, options);
         } catch (RocksDBException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void dumpStatistics(File file){
+        try {
+            Files.write(file.toPath(), this.options.statistics().toString().getBytes());
+            System.out.println("Stats written to the file successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing stats to the file: " + e.getMessage());
         }
     }
 

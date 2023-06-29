@@ -1,11 +1,26 @@
 import org.example.KVPair;
+import org.example.RocksdbKVStore;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Iterator;
 
 
 public class TestUtils {
+
+    public static void dumpStats(RocksdbKVStore rocksdbKVStore, String statsFilePath){
+        File statsFile = new File(statsFilePath);
+        if (!statsFile.exists()) {
+            try {
+                statsFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        rocksdbKVStore.dumpStatistics(statsFile);
+    }
     public static void copyStrToFixedLengthArr(String str, byte[] fixedLenArr) {
         for (int i = 0; i < fixedLenArr.length; i++) {
             fixedLenArr[i] = 0;
