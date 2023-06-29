@@ -8,6 +8,8 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
+import java.util.List;
+
 public class TestBatchedWriteQuery {
     private final int noOfPairs = 10000000;
 
@@ -28,13 +30,12 @@ public class TestBatchedWriteQuery {
     }
 
     private void batchedWriteTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
-        TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()),1000);
-        }, "batch write of batch size 1000");
-
-        TestUtils.measureExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()),10000);
-        }, "batch write of batch size 10000");
+        List<Integer> batchSizes = List.of(1000, 10000, 100000, 1000000, noOfPairs);
+        for(int batchSize: batchSizes) {
+            TestUtils.measureExecutionTime(() -> {
+                kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), batchSize);
+            }, "batch write of batch size "+batchSize);
+        }
     }
 
 }
