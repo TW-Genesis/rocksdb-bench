@@ -6,6 +6,7 @@ import org.example.JenaBPTKVStoreConfig.JenaBPTKVStoreConfig1;
 import org.example.KVStore;
 import org.example.RocksdbKVStore;
 import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
+import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig2;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
@@ -43,6 +44,15 @@ public class TestRandomReadQuery {
     void RocksDBRandomReadIncreasedKVSizeTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig2();
         RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
+        randomReadTest(rocksdbKVStore, commonKVStoreConfig);
+        TestUtils.dumpStats(rocksdbKVStore, "random-read-query.rocksdbstats");
+        rocksdbKVStore.clean();
+    }
+
+    @Test
+    void RocksDBRandomReadIncreasedThreadsTest() throws RocksDBException {
+        CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
+        RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig2(commonKVStoreConfig));
         randomReadTest(rocksdbKVStore, commonKVStoreConfig);
         TestUtils.dumpStats(rocksdbKVStore, "random-read-query.rocksdbstats");
         rocksdbKVStore.clean();
