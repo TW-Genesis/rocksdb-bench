@@ -18,13 +18,13 @@ public class TestRandomReadQuery {
     @Test
     public void jenaBPTRandomReadTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig), false);
         randomReadTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
 
     @Test
-    void RocksDBRandomReadTest() throws RocksDBException {
+    public void RocksDBRandomReadTest() throws RocksDBException {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
         RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1(commonKVStoreConfig));
         randomReadTest(rocksdbKVStore, commonKVStoreConfig);
@@ -35,7 +35,7 @@ public class TestRandomReadQuery {
     @Test
     public void jenaBPTRandomReadIncreasedKVSizeTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig2();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig), false);
         randomReadTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
@@ -60,12 +60,12 @@ public class TestRandomReadQuery {
 
     private void randomReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         int batchSize = noOfPairs;
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), batchSize);
         }, "batch write of batch size "+batchSize);
         Random random = new Random();
 
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
                 byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
                 TestUtils.copyStrToFixedLengthArr("k" +  ( random.nextInt(noOfPairs) + 1), fixedLengthKey);

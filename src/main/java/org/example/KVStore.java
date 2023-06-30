@@ -12,4 +12,6 @@ public interface KVStore {
     void readBatch(List<byte[]> keys);
 
     void rangeQuery(byte[] minKey, byte[] maxKey);
+
+    void insertConcurrently(List<Iterator<KVPair>> kvPairsList, int batchSize);
 }

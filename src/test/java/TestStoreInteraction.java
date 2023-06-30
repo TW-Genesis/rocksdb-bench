@@ -14,7 +14,7 @@ public class TestStoreInteraction {
     @Test
     public void jenaBPTInteractionTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig), false);
         isInteractionValid(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }

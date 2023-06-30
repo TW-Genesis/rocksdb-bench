@@ -6,8 +6,13 @@ import org.rocksdb.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.example.Utils.compareKeys;
 
@@ -64,6 +69,10 @@ public class RocksdbKVStore implements KVStore {
 
     @Override
     public void insertBatch(Iterator<KVPair> kvPairs, int batchSize) {
+        insertBatch(kvPairs, batchSize, db);
+    }
+
+    public static void insertBatch(Iterator<KVPair> kvPairs, int batchSize, RocksDB db){
         try {
             do {
                 int batchKVPairs = 0;
@@ -87,7 +96,46 @@ public class RocksdbKVStore implements KVStore {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public void insertConcurrently(List<Iterator<KVPair>> kvPairsList, int batchSize) {
+        ExecutorService executorService = Executors.newFixedThreadPool(kvPairsList.size());
+        List<WriteTask> tasks = new ArrayList<>();
+        for(int i=0;i< kvPairsList.size();i++)
+            tasks.add(new WriteTask(kvPairsList.get(i), batchSize, db));
+        try {
+            executorService.invokeAll(tasks);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        executorService.shutdown();
+        try {
+            if(executorService.awaitTermination(1000, TimeUnit.SECONDS)){
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class WriteTask implements Callable<Boolean> {
+        private final Iterator<KVPair> kvPairs;
+        private final RocksDB db;
+        private final int batchSize;
+        
+
+        public WriteTask(Iterator<KVPair> kvPairs, int batchSize, RocksDB db) {
+            this.kvPairs = kvPairs;
+            this.db = db;
+            this.batchSize = batchSize;
+        }
+
+        @Override
+        public Boolean call() {
+            insertBatch(kvPairs, batchSize, db);
+            return true;
+        }
+    }
     @Override
     public void readBatch(List<byte[]> keys) {
         try {

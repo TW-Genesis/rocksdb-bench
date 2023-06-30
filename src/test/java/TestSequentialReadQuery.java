@@ -14,7 +14,7 @@ public class TestSequentialReadQuery {
     @Test
     public void jenaBPSequentialReadTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig), false);
         sequentialReadTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
@@ -30,11 +30,11 @@ public class TestSequentialReadQuery {
 
     private void sequentialReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         int batchSize = noOfPairs;
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), batchSize);
         }, "batch write of batch size "+batchSize);
 
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
                 byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
                 TestUtils.copyStrToFixedLengthArr("k" + i, fixedLengthKey);

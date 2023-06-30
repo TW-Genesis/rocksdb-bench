@@ -35,7 +35,7 @@ public class TestUtils {
         }
     }
 
-    public static void measureExecutionTime(Runnable function, String operation) {
+    public static void measureThreadExecutionTime(Runnable function, String operation) {
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         long cpuTimeStampBefore = threadMXBean.getCurrentThreadCpuTime();
 
@@ -44,6 +44,16 @@ public class TestUtils {
         long cpuTimeStampAfter = threadMXBean.getCurrentThreadCpuTime();
         System.out.println(operation + ":");
         System.out.println("cpuTimeSpent            = " + (double) (cpuTimeStampAfter - cpuTimeStampBefore) / 1_000_000_000 + "s");
+    }
+
+    public static void measureWallClockExecutionTime(Runnable function, String operation) {
+        long cpuTimeStampBefore = System.nanoTime();
+
+        function.run();
+
+        long cpuTimeStampAfter = System.nanoTime();
+        System.out.println(operation + ":");
+        System.out.println("wallClockTimeSpent            = " + (double) (cpuTimeStampAfter - cpuTimeStampBefore) / 1_000_000_000 + "s");
     }
 
     public static class IncrementalKVGenerator implements Iterator<KVPair> {

@@ -16,7 +16,7 @@ public class TestBatchedReadQuery {
     @Test
     public void jenaBPTBatchReadTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig), false);
         batchedReadTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
@@ -32,11 +32,11 @@ public class TestBatchedReadQuery {
 
     private void batchedReadTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
         int batchSize = 100000000;
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), batchSize);
         }, "batch write of batch size "+ batchSize);
 
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             ArrayList<byte[]> keys = new ArrayList<>();
             keys.ensureCapacity(noOfPairs);
             for (int i = 1; i <= noOfPairs; i++) {

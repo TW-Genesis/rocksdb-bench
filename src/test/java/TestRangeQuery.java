@@ -8,15 +8,13 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
-import java.util.List;
-
 public class TestRangeQuery {
     private final int noOfPairs = 10000000;
 
     @Test
     public void jenaBPTRangeQueryTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig),false);
         rangeQueryTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
@@ -30,11 +28,11 @@ public class TestRangeQuery {
     }
 
     private void rangeQueryTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.IncrementalKVGenerator(1, noOfPairs, commonKVStoreConfig.getKVSize()), 10000);
         }, "batch write of batch size 10000");
 
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             byte[] minKey = new byte[commonKVStoreConfig.getKVSize()];
             TestUtils.copyStrToFixedLengthArr("k" + 1, minKey);
             byte[] maxKey = new byte[commonKVStoreConfig.getKVSize()];

@@ -14,7 +14,7 @@ public class TestStress {
     @Test
     public void jenaBPTStressTest() {
         CommonKVStoreConfig commonKVStoreConfig = new CommonKVStoreConfig1();
-        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig));
+        KVStore kvStore = new JenaBPTKVStore(new JenaBPTKVStoreConfig1(commonKVStoreConfig), false);
         stressTest(kvStore, commonKVStoreConfig);
         kvStore.clean();
     }
@@ -28,7 +28,7 @@ public class TestStress {
     }
 
     private void stressTest(KVStore kvStore, CommonKVStoreConfig commonKVStoreConfig) {
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
                 byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
                 byte[] fixedLengthValue = new byte[commonKVStoreConfig.getKVSize()];
@@ -38,7 +38,7 @@ public class TestStress {
             }
         }, "write");
 
-        TestUtils.measureExecutionTime(() -> {
+        TestUtils.measureThreadExecutionTime(() -> {
             for (int i = 1; i <= noOfPairs; i++) {
                 byte[] fixedLengthKey = new byte[commonKVStoreConfig.getKVSize()];
                 TestUtils.copyStrToFixedLengthArr("k" + i, fixedLengthKey);
