@@ -34,6 +34,10 @@ public class JenaBPTKVStore implements KVStore{
         this.thing = transactional(bPlusTree);
     }
 
+    public Transactional geTransactional(){
+        return this.thing;
+    }
+    
     @Override
     public void insert(byte[] key, byte[] value) {
         bPlusTree.insert(new Record(key, value));
@@ -47,8 +51,7 @@ public class JenaBPTKVStore implements KVStore{
     @Override
     public void clean() {
         if(this.isTransactional){
-            Transactional thing = transactional(bPlusTree);
-            Txn.executeWrite(thing, () -> {
+            Txn.executeWrite(this.thing, () -> {
                 bPlusTree.clear();
             } );
         }else{
