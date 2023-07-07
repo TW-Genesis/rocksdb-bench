@@ -54,33 +54,43 @@ std::string convert_to_string(char arr[], int size)
     return s;
 }
 
-void batch_write(DB* db,Options options,int batchSize,int no_kv_pairs){
-   auto start = std::chrono::steady_clock::now();
+void measure_thread_execution_time(const std::function<void()> &function, std::string operation)
+{
+  auto start = std::chrono::steady_clock::now();
+  function();
+  auto end = std::chrono::steady_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  std::cout << "Elapsed time for " << operation << " :" << duration.count()
+            << " milliseconds" << std::endl;
+}
+void batch_write(DB *db, Options options, int batchSize, int no_kv_pairs)
+{
+  auto batch_write = [db, no_kv_pairs, batchSize]()
+  {
     {
-    int pair_count = 1;
-    do {
-           int batchKVPairs = 0;
-           WriteBatch batch;
-           while (pair_count<=no_kv_pairs && batchKVPairs < batchSize) {
-                char fixed_length_key[kv_size];
-                char fixed_length_value[kv_size];
-                copy_str_to_fixed_length_arr("k" + std::to_string(pair_count), fixed_length_key, kv_size);
-                copy_str_to_fixed_length_arr("v" + std::to_string(pair_count), fixed_length_value, kv_size);
+      int pair_count = 1;
+      do
+      {
+        int batchKVPairs = 0;
+        WriteBatch batch;
+        while (pair_count <= no_kv_pairs && batchKVPairs < batchSize)
+        {
+          char fixed_length_key[kv_size];
+          char fixed_length_value[kv_size];
+          copy_str_to_fixed_length_arr("k" + std::to_string(pair_count), fixed_length_key, kv_size);
+          copy_str_to_fixed_length_arr("v" + std::to_string(pair_count), fixed_length_value, kv_size);
 
-                batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
-                pair_count++;
-                batchKVPairs++;
-           }
-           db->Write(WriteOptions(), &batch);
-    } while (pair_count<=no_kv_pairs);
-
+          batch.Put(rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
+          pair_count++;
+          batchKVPairs++;
+        }
+        db->Write(WriteOptions(), &batch);
+      } while (pair_count <= no_kv_pairs);
     }
-    auto end = std::chrono::steady_clock::now();
-    auto duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Elapsed time for batch write of batch size "<< batchSize << " for " << no_kv_pairs<< " pairs :"  << duration.count()
-              << " milliseconds" << std::endl;
-    rocksdb::DestroyDB(db->GetName(), options);
+  };
+  measure_thread_execution_time(batch_write, "Batch Write"+ std::to_string(batchSize));
+  rocksdb::DestroyDB(db->GetName(), options);
 }
 
 int main() {
@@ -106,30 +116,26 @@ int main() {
   const int batchSize= 10000;
   batch_write(db, options, batchSize, no_kv_pairs);
   }
-  //Write
-  {
-      auto start = std::chrono::steady_clock::now();
+  // Write
+    {
+      auto write_func = [db]()
       {
-        for (int i = 1; i <= no_kv_pairs; i++) {
+        for (int i = 1; i <= no_kv_pairs; i++)
+        {
           char fixed_length_key[kv_size];
           char fixed_length_value[kv_size];
           copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
           copy_str_to_fixed_length_arr("v" + std::to_string(i), fixed_length_value, kv_size);
-
-          db->Put(WriteOptions(),rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
+          db->Put(WriteOptions(), rocksdb::Slice(fixed_length_key, kv_size), rocksdb::Slice(fixed_length_value, kv_size));
         }
-      }
-      auto end = std::chrono::steady_clock::now();
-      auto duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-      std::cout << "Elapsed time for write: " << duration.count()
-                << " milliseconds" << std::endl;
+      };
+      measure_thread_execution_time(write_func, "Write");
     }
 
-//Range Query
-  {
-        auto start = std::chrono::steady_clock::now();
-
+    // Range Query
+    {
+      auto range_func = [db]()
+      {
         char minKey[kv_size];
         char maxKey[kv_size];
         copy_str_to_fixed_length_arr("k" + std::to_string(1), minKey, kv_size);
@@ -138,59 +144,55 @@ int main() {
         std::string minKeyString(minKey, kv_size);
         std::string maxKeyString(maxKey, kv_size);
 
-        rocksdb::Iterator* it = db->NewIterator(ReadOptions());
+        rocksdb::Iterator *it = db->NewIterator(ReadOptions());
         it->Seek(rocksdb::Slice(minKeyString));
 
-        for (; it->Valid() && it->key().ToString() <= maxKeyString; it->Next()) {
-            std::string value = it->value().ToString();
+        for (; it->Valid() && it->key().ToString() <= maxKeyString; it->Next())
+        {
+          std::string value = it->value().ToString();
         }
-
-        auto end = std::chrono::steady_clock::now();
-        auto duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        std::cout << "Elapsed time for range query: " << duration.count()
-                 << " milliseconds" << std::endl;
-  }
-
-//Read
-  {
-    auto start = std::chrono::steady_clock::now();
-    {
-      for (int i = 1; i <= no_kv_pairs; i++) {
-        char fixed_length_key[kv_size];
-        std::string value;
-        copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
-
-        db->Get(ReadOptions(), rocksdb::Slice(fixed_length_key, kv_size), &value);
-      }
+      };
+      measure_thread_execution_time(range_func, "Range Query");
     }
-    auto end = std::chrono::steady_clock::now();
-    auto duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Elapsed time for read: " << duration.count()
-              << " milliseconds" << std::endl;
-  }
-  //Batch Read
-  {
-      std::vector<rocksdb::Slice> keys;
-      std::vector<std::string> values;
 
-      auto start = std::chrono::steady_clock::now();
+    // Read
+    {
+      auto read_func = [db]()
       {
-        for (int i = 1; i <= no_kv_pairs; i++) {
-          char fixed_length_key[kv_size];
-          copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
-          keys.push_back(rocksdb::Slice(fixed_length_key));
-        }
-      }
+        {
+          for (int i = 1; i <= no_kv_pairs; i++)
+          {
+            char fixed_length_key[kv_size];
+            std::string value;
+            copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
 
-      std::vector<rocksdb::Status> readStatus  = db->MultiGet(ReadOptions(), keys, &values);
-      auto end = std::chrono::steady_clock::now();
-      auto duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-      std::cout << "Elapsed time for batch read: " << duration.count()
-                << " milliseconds" << std::endl;
-  }
+            db->Get(ReadOptions(), rocksdb::Slice(fixed_length_key, kv_size), &value);
+          }
+        }
+      };
+      measure_thread_execution_time(read_func, "Read");
+    }
+    // Batch Read
+    {
+      auto batch_read_func = [db]()
+      {
+        std::vector<rocksdb::Slice> keys;
+        std::vector<std::string> values;
+
+        auto start = std::chrono::steady_clock::now();
+        {
+          for (int i = 1; i <= no_kv_pairs; i++)
+          {
+            char fixed_length_key[kv_size];
+            copy_str_to_fixed_length_arr("k" + std::to_string(i), fixed_length_key, kv_size);
+            keys.push_back(rocksdb::Slice(fixed_length_key));
+          }
+        }
+
+        std::vector<rocksdb::Status> readStatus = db->MultiGet(ReadOptions(), keys, &values);
+      };
+      measure_thread_execution_time(batch_read_func, "Batch Read");
+    }
   db->Close();
   rocksdb::DestroyDB(db->GetName(), options);
   delete db;
