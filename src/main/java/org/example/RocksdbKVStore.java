@@ -6,13 +6,8 @@ import org.rocksdb.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.example.Utils.compareKeys;
 
@@ -66,87 +61,11 @@ public class RocksdbKVStore implements KVStore {
         }
     }
 
-    public void dumpStatistics(File file){
-        try {
-            Files.write(file.toPath(), this.options.statistics().toString().getBytes());
-            System.out.println("Stats written to the file successfully.");
-        } catch (IOException e) {
-            System.err.println("Error writing stats to the file: " + e.getMessage());
-        }
-    }
-
     @Override
     public void insertBatch(Iterator<KVPair> kvPairs, int batchSize) {
         insertBatch(kvPairs, batchSize, db);
     }
 
-    public static void insertBatch(Iterator<KVPair> kvPairs, int batchSize, RocksDB db){
-        try {
-            do {
-                int batchKVPairs = 0;
-                WriteBatch batch = new WriteBatch();
-                while (kvPairs.hasNext() && batchKVPairs < batchSize) {
-                    KVPair kvPair = kvPairs.next();
-                    try {
-                        if(kvPair.value == null)
-                            kvPair.value = new byte[0];
-                        batch.put(kvPair.key, kvPair.value);
-                        batchKVPairs++;
-                    } catch (RocksDBException e) {
-                        batch.close();
-                        throw new RuntimeException(e);
-                    }
-                }
-                try {
-                    db.write(new WriteOptions(), batch);
-                } catch (RocksDBException e) {
-                    throw new RuntimeException(e);
-                }
-            } while (kvPairs.hasNext());
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @Override
-    public void insertConcurrently(List<Iterator<KVPair>> kvPairsList, int batchSize) {
-        ExecutorService executorService = Executors.newFixedThreadPool(kvPairsList.size());
-        List<WriteTask> tasks = new ArrayList<>();
-        for(int i=0;i< kvPairsList.size();i++)
-            tasks.add(new WriteTask(kvPairsList.get(i), batchSize, db));
-        try {
-            executorService.invokeAll(tasks);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        executorService.shutdown();
-        try {
-            if(executorService.awaitTermination(1000, TimeUnit.SECONDS)){
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    class WriteTask implements Callable<Boolean> {
-        private final Iterator<KVPair> kvPairs;
-        private final RocksDB db;
-        private final int batchSize;
-        
-
-        public WriteTask(Iterator<KVPair> kvPairs, int batchSize, RocksDB db) {
-            this.kvPairs = kvPairs;
-            this.db = db;
-            this.batchSize = batchSize;
-        }
-
-        @Override
-        public Boolean call() {
-            insertBatch(kvPairs, batchSize, db);
-            return true;
-        }
-    }
     @Override
     public void readBatch(List<byte[]> keys) {
         try {
@@ -176,5 +95,50 @@ public class RocksdbKVStore implements KVStore {
         }
 
         iterator.close();
+    }
+
+    public static void insertBatch(Iterator<KVPair> kvPairs, int batchSize, RocksDB db){
+        try {
+            do {
+                int batchKVPairs = 0;
+                WriteBatch batch = new WriteBatch();
+                while (kvPairs.hasNext() && batchKVPairs < batchSize) {
+                    KVPair kvPair = kvPairs.next();
+                    try {
+                        if(kvPair.value == null)
+                            kvPair.value = new byte[0];
+                        batch.put(kvPair.key, kvPair.value);
+                        batchKVPairs++;
+                    } catch (RocksDBException e) {
+                        batch.close();
+                        throw new RuntimeException(e);
+                    }
+                }
+                try {
+                    db.write(new WriteOptions(), batch);
+                } catch (RocksDBException e) {
+                    throw new RuntimeException(e);
+                }
+            } while (kvPairs.hasNext());
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void dumpStatistics(String statsFilePath){
+        File statsFile = new File(statsFilePath);
+        if (!statsFile.exists()) {
+            try {
+                statsFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            Files.write(statsFile.toPath(), this.options.statistics().toString().getBytes());
+            System.out.println("Stats written to the file successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing stats to the file: " + e.getMessage());
+        }
     }
 }

@@ -8,7 +8,7 @@ import org.rocksdb.RocksDBException;
 public class TestPatternRead {
     @Test
     public void jenaBPPatternReadTest() {
-        JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore(false);
+        JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
         patternReadTest(jenaBPTKVStore);
         // jenaBPTKVStore.clean();
     }

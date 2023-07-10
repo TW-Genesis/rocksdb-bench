@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
 public class TestBatchWrite {
-    private final int noOfPairs = 10000000;
+    private final int noOfPairs = 100000000;
 
     @Test
     public void jenaBPSequentialWriteTest() {
-        JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore(false);
+        JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
         batchWriteTest(jenaBPTKVStore);
         // jenaBPTKVStore.clean();
     }
