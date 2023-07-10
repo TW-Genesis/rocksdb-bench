@@ -1,14 +1,9 @@
 package org.example.RocksdbKVStoreConfig;
 
-import org.example.CommonKVStoreConfig.CommonKVStoreConfig;
 import org.rocksdb.Options;
 
 public class RocksdbKVStoreConfig2 implements RocksdbKVStoreConfig{
-    private final CommonKVStoreConfig commonKVStoreConfig;
 
-    public RocksdbKVStoreConfig2(CommonKVStoreConfig commonKVStoreConfig) {
-        this.commonKVStoreConfig = commonKVStoreConfig;
-    }
 
     @Override
     public Options getOption() {
@@ -19,8 +14,5 @@ public class RocksdbKVStoreConfig2 implements RocksdbKVStoreConfig{
         return options;
     }
 
-    @Override
-    public int getKVSize() {
-        return commonKVStoreConfig.getKVSize();
-    }
+    
 }

@@ -27,12 +27,16 @@ public class RocksdbKVStore implements KVStore {
         this.options = rocksdbKVStoreConfig.getOption();
         this.statistics = new Statistics();
         this.options.setStatistics(statistics);
+        this.options.setComparator(BuiltinComparator.BYTEWISE_COMPARATOR);
         this.db = RocksDB.open(this.options, db_path);
     }
 
     @Override
     public void insert(byte[] key, byte[] value) {
         try {
+            if(value == null){
+                value = new byte[0];
+            }
             db.put(key, value);
         } catch (RocksDBException e) {
             throw new RuntimeException(e);
@@ -42,7 +46,11 @@ public class RocksdbKVStore implements KVStore {
     @Override
     public byte[] find(byte[] key) {
         try {
-            return db.get(key);
+            byte[] value = db.get(key);
+            if(value.length == 0){
+                value =null;
+            }
+            return value;
         } catch (RocksDBException e) {
             throw new RuntimeException(e);
         }
@@ -80,9 +88,12 @@ public class RocksdbKVStore implements KVStore {
                 while (kvPairs.hasNext() && batchKVPairs < batchSize) {
                     KVPair kvPair = kvPairs.next();
                     try {
+                        if(kvPair.value == null)
+                            kvPair.value = new byte[0];
                         batch.put(kvPair.key, kvPair.value);
                         batchKVPairs++;
                     } catch (RocksDBException e) {
+                        batch.close();
                         throw new RuntimeException(e);
                     }
                 }
@@ -157,6 +168,9 @@ public class RocksdbKVStore implements KVStore {
             byte[] key = iterator.key();
             if (compareKeys(key, minKey) >= 0 && compareKeys(key, maxKey) < 0) {
                 byte[] value = iterator.value();
+                if(value.length == 0){
+                    value = null;
+                }
             }
             iterator.next();
         }

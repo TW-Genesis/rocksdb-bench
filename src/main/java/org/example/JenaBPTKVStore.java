@@ -11,7 +11,6 @@ import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponent;
 import org.apache.jena.system.Txn;
-import org.example.JenaBPTKVStoreConfig.JenaBPTKVStoreConfig;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +25,11 @@ public class JenaBPTKVStore implements KVStore{
     private final BPlusTree bPlusTree;
     private final Boolean isTransactional;
     private final Transactional thing;
+    private final int keyLength = 24;
+    private final int valueLength = 0;
 
-    public JenaBPTKVStore(JenaBPTKVStoreConfig jenaBPTKVStoreConfig, boolean isTransactional) {
-        this.bPlusTree = BPlusTreeFactory.createBPTree(ComponentId.allocLocal(), new FileSet(BPT_dir, "bptree-java"), new RecordFactory(jenaBPTKVStoreConfig.getKVSize(), jenaBPTKVStoreConfig.getKVSize()));
+    public JenaBPTKVStore(boolean isTransactional) {
+        this.bPlusTree = BPlusTreeFactory.createBPTree(ComponentId.allocLocal(), new FileSet(BPT_dir, "bptree-java"), new RecordFactory(keyLength, valueLength));
         this.isTransactional = isTransactional;
         if(!this.isTransactional) this.bPlusTree.nonTransactional();
         this.thing = transactional(bPlusTree);
