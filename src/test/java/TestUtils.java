@@ -76,7 +76,7 @@ public class TestUtils {
                 S = convertToByteArray(this.noOfSPPairsLeft);
                 P = convertToByteArray(this.noOfSPPairsLeft--);
                 Random random = new Random();
-                this.noOfObjectsLeft = random.nextInt(workloadConfiguration.variance) + 1 + workloadConfiguration.mean;
+                this.noOfObjectsLeft = random.nextInt(workloadConfiguration.variance) + 1 + workloadConfiguration.spMatches;
                 O = convertToByteArray(this.noOfObjectsLeft--);
             }
             byte[] Key = append(append(S, P), O);
@@ -101,7 +101,7 @@ public class TestUtils {
         @Override
         public byte[] next() {
             if(!hasNext()){
-                throw new RuntimeException("no prefixes left");
+                throw new RuntimeException("no SPPairs left");
             }  
             Random random = new Random();
             byte[] S = convertToByteArray(random.nextInt(workloadConfiguration.numOfDistinctSPPairs) + 1);
