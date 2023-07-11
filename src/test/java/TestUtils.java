@@ -41,10 +41,10 @@ public class TestUtils {
         return finalArr;
     }
 
-    //Key[0] is Most significant bit
-    //Key[23] is Least significant bit
+    //Key[0] is Most significant byte
+    //Key[23] is Least significant byte
     //Key[] = [0][1][2][3]...[23]
-    //Key = [s 8bytes] [p 8bytes] [o 8bytes]
+    //Key[] = [s 8bytes] [p 8bytes] [o 8bytes]
 
     public static class KeyGenerator implements Iterator<KVPair> {
         private final WorkloadConfiguration workloadConfiguration;
