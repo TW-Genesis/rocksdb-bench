@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
 public class TestRead {
-    private final int numOfPrefixesToRead = 2;
+    private final int numOfPrefixesToRead = 100;
     @Test
     public void jenaBPPatternReadTest() {
         JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
@@ -38,7 +38,7 @@ public class TestRead {
 
     private byte[] getEdgeSPPair(byte[] spPair) {
         byte[] edgeSPPair = Arrays.copyOf(spPair, spPair.length);
-        for(int i = edgeSPPair.length-1 ; i>=0; i++){
+        for(int i = edgeSPPair.length-1 ; i>=0; i--){
             edgeSPPair[i]++;
             if(edgeSPPair[i] != 0)
                 break;

@@ -1,7 +1,7 @@
 public class WorkloadConfiguration {
-    public static final int numOfDistinctSPPairs = 100;
-    public static final int variance = 5;
-    public static final int mean = 10;
+    public static final int numOfDistinctSPPairs = 1000;
+    public static final int variance = 1;
+    public static final int mean = 10000;
     private static WorkloadConfiguration workloadConfiguration = null;
     private WorkloadConfiguration(){
     }
