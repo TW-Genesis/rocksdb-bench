@@ -5,28 +5,28 @@ import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig1;
 import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
-public class TestBatchWrite {
-    private final int noOfPairs = 100000000;
+public class TestWrite {
 
     @Test
-    public void jenaBPSequentialWriteTest() {
+    public void jenaBPTWriteTest() {
         JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
-        batchWriteTest(jenaBPTKVStore);
+        writeWorkload(jenaBPTKVStore);
         // jenaBPTKVStore.clean();
     }
 
     @Test
-    void RocksDBSequentialWriteTest() throws RocksDBException {
+    void RocksDBWriteTest() throws RocksDBException {
         RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1());
-        batchWriteTest(rocksdbKVStore);
+        writeWorkload(rocksdbKVStore);
         // rocksdbKVStore.clean();
     }
 
-    private void batchWriteTest(KVStore kvStore) {
-        int batchSize = noOfPairs;
+    private void writeWorkload(KVStore kvStore) {
+        WorkloadConfiguration workloadConfiguration = WorkloadConfiguration.getWorkloadConfiguration();
+        int batchSize = 100000;
         TestUtils.measureThreadExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.IncrementalKeyGenerator(0, 0, noOfPairs), batchSize);
+            kvStore.insertBatch(new TestUtils.KeyGenerator(workloadConfiguration), batchSize);
             // kvStore.flush();
-        }, "batch write of batch size "+batchSize);
+        }, "write with batch size of "+ batchSize);
     }
 }

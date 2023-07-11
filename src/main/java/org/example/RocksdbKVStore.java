@@ -1,7 +1,9 @@
 package org.example;
 
+import org.apache.jena.shacl.sys.C;
 import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig;
 import org.rocksdb.*;
+import org.rocksdb.util.BytewiseComparator;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,11 +87,18 @@ public class RocksdbKVStore implements KVStore {
 
         while (iterator.isValid()) {
             byte[] key = iterator.key();
-            if (compareKeys(key, minKey) >= 0 && compareKeys(key, maxKey) < 0) {
+            // for(int i=0;i<key.length;i++){
+            //     System.out.print(key[i] + " ");
+            // }
+            // System.out.println();
+            // if (compareKeys(key, minKey) >= 0 && compareKeys(key, maxKey) < 0) {
+            if (compareKeys(key, maxKey) < 0) {
                 byte[] value = iterator.value();
                 if(value.length == 0){
                     value = null;
                 }
+            }else{
+                break;
             }
             iterator.next();
         }
@@ -107,6 +116,10 @@ public class RocksdbKVStore implements KVStore {
                     try {
                         if(kvPair.value == null)
                             kvPair.value = new byte[0];
+                        // for(int i=0;i<kvPair.key.length;i++){
+                        //     System.out.print(kvPair.key[i] + " ");
+                        // }
+                        // System.out.println();
                         batch.put(kvPair.key, kvPair.value);
                         batchKVPairs++;
                     } catch (RocksDBException e) {

@@ -6,7 +6,7 @@ public class Utils {
         if(key1.length != key2.length)
             throw new RuntimeException("key1 and key2 are of different lengths!");
         for (int i = 0; i < key1.length; i++) {
-            int cmp = Byte.compare(key1[i], key2[i]);
+            int cmp = Integer.compare(Byte.toUnsignedInt(key1[i]), Byte.toUnsignedInt(key2[i]));
             if (cmp != 0) {
                 return cmp;
             }

@@ -57,7 +57,11 @@ public class JenaBPTKVStore implements KVStore{
         Iterator<Record> iterator = bPlusTree.iterator(new Record(minKey, null), new Record(maxKey, null));
 
         while (iterator.hasNext()) {
-            iterator.next().getValue();
+            byte[] key=iterator.next().getKey();
+            // for(int i=0;i<key.length;i++){
+            //     System.out.print(key[i] + " ");
+            // }
+            // System.out.println();
         }
     }
 }
