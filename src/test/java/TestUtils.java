@@ -7,6 +7,13 @@ import java.util.Random;
 
 
 public class TestUtils {
+    public static void printByteArray(byte[] arr){
+        for(int i=0;i<arr.length;i++){
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+
     public static void measureThreadExecutionTime(Runnable function, String operation) {
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         long cpuTimeStampBefore = threadMXBean.getCurrentThreadCpuTime();

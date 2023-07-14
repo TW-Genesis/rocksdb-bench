@@ -58,10 +58,6 @@ public class JenaBPTKVStore implements KVStore{
 
         while (iterator.hasNext()) {
             byte[] key=iterator.next().getKey();
-            // for(int i=0;i<key.length;i++){
-            //     System.out.print(key[i] + " ");
-            // }
-            // System.out.println();
         }
     }
 }
