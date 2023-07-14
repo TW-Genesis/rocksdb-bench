@@ -13,14 +13,12 @@ public class TestRead {
     public void jenaBPPatternReadTest() {
         JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
         patternReadTest(jenaBPTKVStore);
-        // jenaBPTKVStore.clean();
     }
 
     @Test
     void RocksDBPatternReadTest() throws RocksDBException {
         RocksdbKVStore rocksdbKVStore = new RocksdbKVStore(new RocksdbKVStoreConfig1());
         patternReadTest(rocksdbKVStore);
-        // rocksdbKVStore.clean();
     }
 
     private void patternReadTest(KVStore kvStore) {
