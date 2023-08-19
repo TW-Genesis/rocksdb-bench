@@ -1,0 +1,40 @@
+No of Random Reads,"workload type 
+(Distinct pairs | Matches)",Write configuration for RocksDB,Write performance(time in seconds),,"Ratio
+(RocksDB / Jena BPT)",Read configuration for RocksDB,Read performance (time in seconds),,"Ratio
+(RocksDB / Jena BPT)",Memory,
+,,,RocksDB,Jena BPT,,,RocksDB,Jena BPT,,RocksDB,Jena BPT
+100,100 | 100000,default,5.7416,15.8196,36.29%,default,3.5393,0.7035,503.10%,134M,461M
+100,100 | 100000,default,5.7416,15.8196,36.29%,default with readAhead size = 32*1024 bytes,3.3972,0.7035,482.90%,134M,461M
+100,100 | 100000,default,5.7416,15.8196,36.29%,default with readAhead size = 128*1024 bytes,3.0616,0.7035,435.20%,134M,461M
+100,100 | 100000,default,5.7416,15.8196,36.29%,default with readAhead size = 256*1024 bytes,3.8116,0.7035,541.81%,134M,461M
+1000,1000 | 10000,default,6.0851,16.4224,37.05%,default,3.4690,0.6937,500.07%,134M,461M
+1000,1000 | 10000,default,6.0851,16.4224,37.05%,default with readAhead size = 32*1024 bytes,3.2016,0.6937,461.53%,134M,461M
+1000,1001 | 10000,default,6.0851,16.4224,37.05%,default with readAhead size = 128*1024 bytes,3.0844,0.6937,444.63%,134M,461M
+1000,1002 | 10000,default,6.0851,16.4224,37.05%,default with readAhead size = 256*1024 bytes,3.2412,0.6937,467.23%,134M,461M
+10000,10000 | 1000,default,5.9441,14.9886,39.66%,default,3.7185,0.7678,484.31%,134M,461M
+100000,100000 | 100,default,6.0406,14.3715,42.03%,default,5.2579,1.1142,471.90%,136M,465M
+100000,100000 | 100,default,6.0406,14.3715,42.03%,default with readAhead size = 1024 bytes,5.5947,1.1142,502.13%,136M,465M
+100000,100000 | 100,default,6.0406,14.3715,42.03%,default with readAhead size = 8*1024 bytes,5.7011,1.1142,511.68%,136M,465M
+100000,100001 | 100,default,6.0406,14.3715,42.03%,default with readAhead size = 128*1024 bytes,6.5690,1.1142,589.57%,136M,465M
+100000,100000 | 100,default with directio enabled,5.9872,14.3715,41.66%,default with directio enabled,8.9706,1.1142,805.12%,136M,465M
+100000,100000 | 100,data block size = 64 bytes,6.3038,14.3715,43.86%,data block size = 64 bytes,11.6560,1.1142,1046.13%,268M,465M
+100000,100000 | 100,data block size = 128 bytes,6.2692,14.3715,43.62%,data block size = 128 bytes,7.5091,1.1142,673.95%,182M,465M
+100000,100000 | 100,data block size = 512 bytes,6.6278,14.3715,46.12%,data block size = 512 bytes,5.0867,1.1142,456.53%,147M,465M
+100000,100000 | 100,data block size = 1024 bytes,6.3681,14.3715,44.31%,data block size = 1024 bytes,5.2183,1.1142,468.35%,140M,465M
+100000,100000 | 100,data block size = 4*1024 bytes,6.6151,14.3715,46.03%,data block size = 4*1024 bytes,5.6711,1.1142,508.98%,136M,465M
+100000,100000 | 100,data block size = 16*1024 bytes,6.6893,14.3715,46.55%,data block size = 16*1024 bytes,9.6767,1.1142,868.49%,134M,465M
+100000,100000 | 100,data block size = 32*1024 bytes,6.5364,14.3715,45.48%,data block size = 32*1024 bytes,14.6724,1.1142,1316.86%,134M,465M
+100000,100000 | 100,Diable compression,6.1198,14.3715,42.58%,Disable compression,3.7361,1.1142,335.32%,140M,465M
+100000,100000 | 100,Disable compression and checksum,6.7633,14.3715,47.06%,Disable compression and checksum,3.7032,1.1142,332.36%,140M,465M
+100000,100000 | 100,default with prefix bloom filter,6.0443,14.3715,42.06%,Prefix Bloom filter size = 10 bits ; Prefix extractor = CappedPrefixTransform ; Prefix size = 16 bytes,5.4595,1.1142,489.99%,72M,465M
+100000,100000 | 100,default with memtable bloom filter = 10%,6.4311,14.3715,44.75%,Memtable bloom filter size ratio = 10%,5.2327,1.1142,469.64%,136M,465M
+100000,100000 | 100,default with memtable bloom filter = 25%,6.3891,14.3715,44.46%,Memtable bloom filter size ratio = 25%,5.2411,1.1142,470.39%,136M,465M
+100000,100000 | 100,default with memtable bloom filter = 25% and prefix bloom filter,6.6079,14.3715,45.98%,Prefix Bloom filter and memtable with 25% configuration,5.7437,1.1142,515.50%,212M,465M
+100000,100000 | 100,"default with memtable bloom filter = 25% , prefix bloom filter and blocking unnecessary  IO",6.7924,14.3715,47.26%,Prefix Bloom filter; memtable with 25% configuration and blocking unnecssary IO,5.7303,1.1142,514.30%,212M,465M
+1000000,1000000 | 10,default,6.4439,16.1738,39.84%,,25.5561,3.5095,728.20%,154M,507M
+,,,Fedora,,,,,,,,
+1000000,1000000 | 100,default,41.8304,115.408,36.25%,default,62.4660,7.0390,887.43%,742M,4.6G
+1000000,1000000 | 100,custom configs,46.7662,115.408,40.52%,custom configs,44.4457,7.0390,631.42%,784M,4.6G
+1000000,1000000 | 100,custom configs with max open files =2000,45.1696,115.408,39.14%,custom configs with max open files =2000,41.8457,7.0390,594.48%,784M,4.6G
+1000000,1000000 | 100,default,44.8060,121.477,36.88%,"Compacted into Single SST, no bloom filter, no compression (RocksDb cpp)",11,7.0390,156.27%,1.4G,4.6G
+1000000,1000000 | 100,default,44.8060,121.477,36.88%,"Compacted into Single SST, no bloom filter, no compression (RocksDb Java)",34.7649,7.0390,493.89%,1.4G,4.6G
