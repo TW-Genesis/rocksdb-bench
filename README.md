@@ -1,20 +1,58 @@
 # rocksdb-bench
 
-### Steps to run rocksdb-cpp stress test:
-
-1. Install rocksdb libs:
+## Performance Scores of RocksDb and Apache Jena
 
 ```
-    git clone https://github.com/facebook/rocksdb.git
-    cd rocksdb
-    DEBUG_LEVEL=0 make shared_lib install-shared
+Apply the tuning parameters provided by RocksDB in order to increase 
+read performance of RocksDb. 
+Compare the read, write and memory scores with Apache Jena B+ tree.
 ```
 
-2. export rocksdb library path and run the stress test:
+## Experiment Setup
 
 ```
-    cd rocksdb-bench
-    export LD_LIBRARY_PATH=/usr/local/lib
-    make bench
-    ./build/cpp/benchmark1
+Machine 1 - Intel core i7 - 9750H CPU @2.60 GHz x 12 (SSD)
+Machine 2 - AMD Ryzen 7 5700G x86_64 (NVME)
 ```
+
+## Workload configuration
+```
+Consider S(Subject), P(Perdicate) and O(Object) as input triples. Each of size
+8 bytes. Here key is SPO of size 24 bytes. For each SP pair we have N number
+of Object matches. 
+```
+![img_1.png](img.png)
+
+## Tuning Parameters
+- ReadAhead size
+- Direct I/O 
+- Data block Size 
+- Disable Compression and Checksum
+- Bloom Filter 
+- Prefix Bloom filter 
+- Memtable Bloom filter
+- Asynchronous I/O  
+- Compaction Styles
+- Compression types
+- writeBufferSize, maxWriteBufferNumber, minWriteBufferNumberToMerge 
+- maxOpenFiles 
+- memtablePrefixBloomSizeRatio 
+- Block Cache 
+- cacheIndexAndFilterBlocks
+- Single SST file
+- Parallelism
+
+## Result
+```
+For workload type-4 by removing compression and checksum we were able
+to increase read score of rocksDB ( 3.7361s for 10 million pairs)
+which was (5.2579s for default configuration).Jena B+ tree uses more memory 
+than RocksDB. Maybe as RockDB uses compression techniques it takes much less 
+space than Jena. 
+
+The read performance of RocksDb increased when all the sst files where 
+compacted into single sst file using Universal compaction by LDB tool. 
+```
+
+## Benchmark scores
+https://github.com/TW-Genesis/rocksdb-bench/blob/main/RocksDb-vs-Jena.csv
