@@ -50,7 +50,7 @@ which was (62.4660s for default configuration).Jena B+ tree uses more memory
 than RocksDB. Maybe as RockDB uses compression techniques it takes much less 
 space than Jena. 
 
-The read performance of RocksDb increased when all the sst files where 
+The read performance of RocksDb increased when all the sst files were 
 compacted into single sst file using Universal compaction by LDB tool. 
 ```
 
