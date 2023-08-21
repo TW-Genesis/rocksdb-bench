@@ -58,8 +58,7 @@ due to disabling compression. Jena B+ tree uses more memory
 than RocksDB.
 
 The read performance of RocksDb increased when all the sst files were 
-compacted into single sst file(34.7649s and 11s for java and c++ implementation of RocksDb respectively)
-using Universal compaction by LDB tool. 
+compacted into single sst file (34.7649s) using Universal compaction by LDB tool. 
 ```
 
 ## Benchmark scores
