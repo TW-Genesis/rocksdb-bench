@@ -1,11 +1,20 @@
 # rocksdb-bench
 
-## Performance Scores of RocksDb and Apache Jena
+## Introduction
 
 ```
-Apply the tuning parameters provided by RocksDB in order to increase 
-read performance of RocksDb. 
-Compare the read, write and memory scores with Apache Jena B+ tree.
+Most of the Open Source triple stores such as Apache Jena, RDF4J, 
+Oxigraph, etc. use KV-store in the bottom most layer to store triples.
+The storage layer plays a major role in performance score of any
+storage engine. The repository contains a benchmark code that can be used for
+testing Read write performance of any KV-store for storage and retrieval of RDF-triples.
+The benchmark improves the observability of the triple store performance.
+We have provided:
+- Common interfaces that can be extended by any KV-store.
+- A workload configuration that can be configured to cover a wide spectrum of triple workloads.
+- A benchmark code that uses the common interfaces and the workload 
+  configuration to test read and write performance of the KV-store.
+- Benchmark results for Apache Jena B+ Tree and RocksDB as a use case.
 ```
 
 ## Experiment Setup
