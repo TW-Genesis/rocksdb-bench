@@ -53,9 +53,9 @@ of Object **matches**.
 
 ## Result
 ```
-For workload type-6 by removing compression and checksum we were able
-to increase read score of rocksDB (43.4521s)
-which was 62.4660s (for default configuration) although increasing space
+For workload type-6 by removing compression we were able
+to increase read score of rocksDB (43.4521s) which was 62.4660s
+for default configuration although increasing space
 due to disabling compression. Jena B+ tree uses more memory 
 than RocksDB.
 
