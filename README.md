@@ -40,7 +40,7 @@ of Object **matches**.
 - Block Cache 
 - cacheIndexAndFilterBlocks
 - Single SST file
-- Parallelism
+- No of background threads
 
 ## Result
 ```
