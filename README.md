@@ -44,7 +44,7 @@ of Object **matches**.
 
 ## Result
 ```
-For workload type-4 by removing compression and checksum we were able
+For workload type-6 by removing compression and checksum we were able
 to increase read score of rocksDB ( 43.4521s for 100 million pairs)
 which was (62.4660s for default configuration).Jena B+ tree uses more memory 
 than RocksDB. Maybe as RockDB uses compression techniques it takes much less 
