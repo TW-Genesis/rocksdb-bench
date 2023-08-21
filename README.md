@@ -17,9 +17,9 @@ Machine 2 - AMD Ryzen 7 5700G x86_64 (NVME)
 
 ## Workload configuration
 ```
-Consider S(Subject), P(Perdicate) and O(Object) as input triples. Each of size
+Consider (S,P,O) as input triple. Each of size
 8 bytes. Here key is SPO of size 24 bytes. For each SP pair we have N number
-of Object matches. 
+of Object **matches**. 
 ```
 ![img_1.png](img.png)
 
