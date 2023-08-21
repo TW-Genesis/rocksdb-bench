@@ -10,13 +10,13 @@ Machine 1,100,100 | 100000,default,5.7416,15.8196,275.53%,default,3.5393,0.7035,
 ,100,100 | 100000,default,5.7416,15.8196,275.53%,default with readAhead size = 256*1024 bytes,3.8116,0.7035,541.81%,134,461,344.03%
 ,1000,1000 | 10000,default,6.0851,16.4224,269.88%,default,3.4690,0.6937,500.07%,134,461,344.03%
 ,1000,1000 | 10000,default,6.0851,16.4224,269.88%,default with readAhead size = 32*1024 bytes,3.2016,0.6937,461.53%,134,461,344.03%
-,1000,1001 | 10000,default,6.0851,16.4224,269.88%,default with readAhead size = 128*1024 bytes,3.0844,0.6937,444.63%,134,461,344.03%
-,1000,1002 | 10000,default,6.0851,16.4224,269.88%,default with readAhead size = 256*1024 bytes,3.2412,0.6937,467.23%,134,461,344.03%
+,1000,1000 | 10000,default,6.0851,16.4224,269.88%,default with readAhead size = 128*1024 bytes,3.0844,0.6937,444.63%,134,461,344.03%
+,1000,1000 | 10000,default,6.0851,16.4224,269.88%,default with readAhead size = 256*1024 bytes,3.2412,0.6937,467.23%,134,461,344.03%
 ,10000,10000 | 1000,default,5.9441,14.9886,252.16%,default,3.7185,0.7678,484.31%,134,461,344.03%
 ,100000,100000 | 100,default,6.0406,14.3715,237.92%,default,5.2579,1.1142,471.90%,136,465,341.91%
 ,100000,100000 | 100,default,6.0406,14.3715,237.92%,default with readAhead size = 1024 bytes,5.5947,1.1142,502.13%,136,465,341.91%
 ,100000,100000 | 100,default,6.0406,14.3715,237.92%,default with readAhead size = 8*1024 bytes,5.7011,1.1142,511.68%,136,465,341.91%
-,100000,100001 | 100,default,6.0406,14.3715,237.92%,default with readAhead size = 128*1024 bytes,6.5690,1.1142,589.57%,136,465,341.91%
+,100000,100000 | 100,default,6.0406,14.3715,237.92%,default with readAhead size = 128*1024 bytes,6.5690,1.1142,589.57%,136,465,341.91%
 ,100000,100000 | 100,default with directio enabled,5.9872,14.3715,240.04%,default with directio enabled,8.9706,1.1142,805.12%,136,465,341.91%
 ,100000,100000 | 100,data block size = 64 bytes,6.3038,14.3715,227.98%,data block size = 64 bytes,11.6560,1.1142,1046.13%,268,465,173.51%
 ,100000,100000 | 100,data block size = 128 bytes,6.2692,14.3715,229.24%,data block size = 128 bytes,7.5091,1.1142,673.95%,182,465,255.49%
@@ -39,7 +39,7 @@ Machine 2,1000000,1000000 | 100,default,41.8304,115.408,275.90%,default,62.4660,
 ,1000000,1000000 | 100,custom configs** with max open files =2000,45.1696,115.408,255.50%,custom configs** with max open files =2000,41.8457,7.0390,594.48%,784,4600,586.73%
 ,1000000,1000000 | 100,default,44.8060,121.477,271.12%,"Compacted into Single SST***, no bloom filter, no compression (RocksDb cpp)",11,7.0390,156.27%,1400,4600,328.57%
 ,1000000,1000000 | 100,default,44.8060,121.477,271.12%,"Compacted into Single SST***, no bloom filter, no compression (RocksDb Java)",34.7649,7.0390,493.89%,1400,4600,328.57%
-,1000000,1000000 | 100,Disable compression and checksum,42.5988,121.477,,Disable compression and checksum,43.4521,7.0390,617.31%,1400,4600,328.57%
+,1000000,1000000 | 100,Disable compression and checksum,42.5988,121.477,285.17%,Disable compression and checksum,43.4521,7.0390,617.31%,1400,4600,328.57%
 ,,,,,,,,,,,,,
 ,,,,,,,,,,,,,
 ,,,,,,,,,,,,,
