@@ -40,8 +40,8 @@ Machine 2,1000000,1000000 | 100,default,41.8304,115.408,275.90%,default,62.4660,
 ,1000000,1000000 | 100,default,44.8060,121.477,271.12%,"Compacted into Single SST***, no bloom filter, no compression (RocksDb cpp)",11,7.0390,156.27%,1400,4600,328.57%
 ,1000000,1000000 | 100,default,44.8060,121.477,271.12%,"Compacted into Single SST***, no bloom filter, no compression (RocksDb Java)",34.7649,7.0390,493.89%,1400,4600,328.57%
 ,1000000,1000000 | 100,Disable compression and checksum,42.5988,121.477,285.17%,Disable compression and checksum,43.4521,7.0390,617.31%,1400,4600,328.57%
-,,,,,,,,,,,,,
-,,,,,,,,,,,,,
+,1000000,1000000 | 100,Disable compression ,42.9731,121.477,282.68%,Disable compression,45.0402,7.0390,639.87%,1400,4600,328.57%
+,1000000,1000000 | 100,Disable checksum ,42.3029,121.477,287.16%,Disable checksum ,61.9078,7.0390,879.50%,742,4600,619.95%
 ,,,,,,,,,,,,,
 Prefix Bloom filter configs*,Prefix Bloom filter size = 10 bits; Prefix extractor = CappedPrefixTransform; Prefix size = 16 bytes,,,,,,,,,,,,
 ,,,,,,,,,,,,,
