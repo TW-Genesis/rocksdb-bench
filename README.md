@@ -43,7 +43,6 @@ of Object **matches**.
 - Asynchronous I/O  
 - Compaction Styles
 - Compression types
-- writeBufferSize, maxWriteBufferNumber, minWriteBufferNumberToMerge 
 - maxOpenFiles 
 - memtablePrefixBloomSizeRatio 
 - Block Cache 
