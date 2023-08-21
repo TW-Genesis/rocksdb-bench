@@ -47,7 +47,6 @@ of Object **matches**.
 - memtablePrefixBloomSizeRatio 
 - Block Cache 
 - cacheIndexAndFilterBlocks
-- Single SST file
 - No of background threads
 
 ## Result
