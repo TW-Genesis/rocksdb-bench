@@ -17,10 +17,8 @@ $(shell mkdir -p $(DIRS))
 bench: benchmark1
 
 benchmark1: benchmark1.cc
-	$(CXX) $(CXXFLAGS) $@.cc -o./build/cpp/$@ /usr/local/lib/librocksdb.so.8.4 -I/usr/local/include -O2 -std=c++17 $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
+	$(CXX) $(CXXFLAGS) $@.cc -o./build/cpp/$@ /home/e4r/workspace/rocksdb/librocksdb.so -I/home/e4r/workspace/rocksdb/include -O2 -std=c++17 $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
 
 
 clean:
 	rm -rf ./benchmark1
-
-
