@@ -14,11 +14,11 @@ endif
 DIRS=build/cpp
 $(shell mkdir -p $(DIRS))
 
-bench: benchmark1
+bench: test_read
 
-benchmark1: benchmark1.cc
+test_read: test_read.cc
 	$(CXX) $(CXXFLAGS) $@.cc -o./build/cpp/$@ /home/e4r/workspace/rocksdb/librocksdb.so -I/home/e4r/workspace/rocksdb/include -O2 -std=c++17 $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
 
 
 clean:
-	rm -rf ./benchmark1
+	rm -rf ./test_read

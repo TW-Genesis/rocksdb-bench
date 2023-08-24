@@ -1,4 +1,3 @@
-
 #include <chrono>
 #include <cstdio>
 #include <iostream>
@@ -40,9 +39,9 @@ void measure_thread_execution_time(const std::function<void()> &function, std::s
 
 class WorkloadConfiguration {
 public:
-    static const int numOfDistinctSPPairs = 1000;
+    static const int numOfDistinctSPPairs = 100000;
     static const int variance = 1;
-    static const int spMatches = 10000;
+    static const int spMatches = 100;
 
     static WorkloadConfiguration& getWorkloadConfiguration() {
         static WorkloadConfiguration instance;
