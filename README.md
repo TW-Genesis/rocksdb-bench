@@ -64,4 +64,4 @@ compacted into single sst file (34.7649s) using Universal compaction by LDB tool
 ```
 
 ## Benchmark scores
-https://github.com/TW-Genesis/rocksdb-bench/blob/main/RocksDb-vs-Jena.xlsx
+https://github.com/TW-Genesis/rocksdb-bench/blob/main/RocksDB%20Java-vs-Apache%20Jena.xlsx
