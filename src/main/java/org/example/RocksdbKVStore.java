@@ -3,9 +3,6 @@ package org.example;
 import org.example.RocksdbKVStoreConfig.RocksdbKVStoreConfig;
 import org.rocksdb.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
 
@@ -110,7 +107,6 @@ public class RocksdbKVStore implements KVStore {
         while (iterator.isValid()) {
             byte[] key = iterator.key();
 
-            // if (compareKeys(key, minKey) >= 0 && compareKeys(key, maxKey) < 0) {
             if (compareKeys(key, maxKey) < 0) {
                 byte[] value = iterator.value();
                 if (value.length == 0) {
@@ -121,24 +117,6 @@ public class RocksdbKVStore implements KVStore {
             }
             iterator.next();
         }
-
         iterator.close();
-    }
-
-    public void dumpStatistics(String statsFilePath) {
-        File statsFile = new File(statsFilePath);
-        if (!statsFile.exists()) {
-            try {
-                statsFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        try {
-            Files.write(statsFile.toPath(), this.options.statistics().toString().getBytes());
-            System.out.println("Stats written to the file successfully.");
-        } catch (IOException e) {
-            System.err.println("Error writing stats to the file: " + e.getMessage());
-        }
     }
 }
