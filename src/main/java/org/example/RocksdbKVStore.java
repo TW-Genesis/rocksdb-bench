@@ -63,7 +63,31 @@ public class RocksdbKVStore implements KVStore {
 
     @Override
     public void insertBatch(Iterator<KVPair> kvPairs, int batchSize) {
-        insertBatch(kvPairs, batchSize, db);
+        try {
+            do {
+                int batchKVPairs = 0;
+                WriteBatch batch = new WriteBatch();
+                while (kvPairs.hasNext() && batchKVPairs < batchSize) {
+                    KVPair kvPair = kvPairs.next();
+                    try {
+                        if(kvPair.value == null)
+                            kvPair.value = new byte[0];
+                        batch.put(kvPair.key, kvPair.value);
+                        batchKVPairs++;
+                    } catch (RocksDBException e) {
+                        batch.close();
+                        throw new RuntimeException(e);
+                    }
+                }
+                try {
+                    db.write(new WriteOptions(), batch);
+                } catch (RocksDBException e) {
+                    throw new RuntimeException(e);
+                }
+            } while (kvPairs.hasNext());
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -99,34 +123,6 @@ public class RocksdbKVStore implements KVStore {
         }
 
         iterator.close();
-    }
-
-    public static void insertBatch(Iterator<KVPair> kvPairs, int batchSize, RocksDB db){
-        try {
-            do {
-                int batchKVPairs = 0;
-                WriteBatch batch = new WriteBatch();
-                while (kvPairs.hasNext() && batchKVPairs < batchSize) {
-                    KVPair kvPair = kvPairs.next();
-                    try {
-                        if(kvPair.value == null)
-                            kvPair.value = new byte[0];
-                        batch.put(kvPair.key, kvPair.value);
-                        batchKVPairs++;
-                    } catch (RocksDBException e) {
-                        batch.close();
-                        throw new RuntimeException(e);
-                    }
-                }
-                try {
-                    db.write(new WriteOptions(), batch);
-                } catch (RocksDBException e) {
-                    throw new RuntimeException(e);
-                }
-            } while (kvPairs.hasNext());
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void dumpStatistics(String statsFilePath){
