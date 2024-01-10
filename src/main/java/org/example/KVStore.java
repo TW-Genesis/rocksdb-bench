@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public interface KVStore {
-    void insert(byte[] key, byte value[]);
+    void insert(byte[] key, byte[] value);
     byte[] find(byte[] key);
     void clean();
 
