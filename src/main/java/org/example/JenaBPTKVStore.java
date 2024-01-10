@@ -11,13 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public class JenaBPTKVStore implements KVStore {
-    private final String BPT_dir = "/home/e4r/test-database/jena-bpt";
     private final BPlusTree bPlusTree;
+    private final String dbPath = "/home/e4r/test-database/jena-bpt";
     private final int keyLength = 24;
     private final int valueLength = 0;
 
     public JenaBPTKVStore() {
-        this.bPlusTree = BPlusTreeFactory.createBPTree(ComponentId.allocLocal(), new FileSet(BPT_dir, "bptree-java"), new RecordFactory(keyLength, valueLength));
+        this.bPlusTree = BPlusTreeFactory.createBPTree(ComponentId.allocLocal(), new FileSet(dbPath, "bptree-java"), new RecordFactory(keyLength, valueLength));
         this.bPlusTree.nonTransactional();
     }
 
@@ -47,8 +47,8 @@ public class JenaBPTKVStore implements KVStore {
 
     @Override
     public void readBatch(List<byte[]> keys) {
-        for (int i = 0; i < keys.size(); i++) {
-            this.find(keys.get(i));
+        for (byte[] key : keys) {
+            this.find(key);
         }
     }
 
