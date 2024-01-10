@@ -9,6 +9,7 @@ import org.rocksdb.RocksDBException;
 
 public class TestRead {
     private final int numOfSPPairsToRead = 100;
+
     @Test
     public void jenaBPPatternReadTest() {
         JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
@@ -24,7 +25,7 @@ public class TestRead {
     private void patternReadTest(KVStore kvStore) {
         TestUtils.measureThreadExecutionTime(() -> {
             TestUtils.RandomSPPairGenerator randomSPPairGenerator = new TestUtils.RandomSPPairGenerator(WorkloadConfiguration.getWorkloadConfiguration(), numOfSPPairsToRead);
-            while(randomSPPairGenerator.hasNext()){
+            while (randomSPPairGenerator.hasNext()) {
                 byte[] spPair = randomSPPairGenerator.next();
                 byte[] O = TestUtils.convertToByteArray(0);
                 byte[] FromKey = TestUtils.append(spPair, O);
@@ -36,9 +37,9 @@ public class TestRead {
 
     private byte[] getEdgeSPPair(byte[] spPair) {
         byte[] edgeSPPair = Arrays.copyOf(spPair, spPair.length);
-        for(int i = edgeSPPair.length-1 ; i>=0; i--){
+        for (int i = edgeSPPair.length - 1; i >= 0; i--) {
             edgeSPPair[i]++;
-            if(edgeSPPair[i] != 0)
+            if (edgeSPPair[i] != 0)
                 break;
         }
         return edgeSPPair;

@@ -29,7 +29,7 @@ public class RocksdbKVStore implements KVStore {
     @Override
     public void insert(byte[] key, byte[] value) {
         try {
-            if(value == null){
+            if (value == null) {
                 value = new byte[0];
             }
             db.put(key, value);
@@ -42,8 +42,8 @@ public class RocksdbKVStore implements KVStore {
     public byte[] find(byte[] key) {
         try {
             byte[] value = db.get(key);
-            if(value.length == 0){
-                value =null;
+            if (value.length == 0) {
+                value = null;
             }
             return value;
         } catch (RocksDBException e) {
@@ -70,7 +70,7 @@ public class RocksdbKVStore implements KVStore {
                 while (kvPairs.hasNext() && batchKVPairs < batchSize) {
                     KVPair kvPair = kvPairs.next();
                     try {
-                        if(kvPair.value == null)
+                        if (kvPair.value == null)
                             kvPair.value = new byte[0];
                         batch.put(kvPair.key, kvPair.value);
                         batchKVPairs++;
@@ -113,10 +113,10 @@ public class RocksdbKVStore implements KVStore {
             // if (compareKeys(key, minKey) >= 0 && compareKeys(key, maxKey) < 0) {
             if (compareKeys(key, maxKey) < 0) {
                 byte[] value = iterator.value();
-                if(value.length == 0){
+                if (value.length == 0) {
                     value = null;
                 }
-            }else{
+            } else {
                 break;
             }
             iterator.next();
@@ -125,7 +125,7 @@ public class RocksdbKVStore implements KVStore {
         iterator.close();
     }
 
-    public void dumpStatistics(String statsFilePath){
+    public void dumpStatistics(String statsFilePath) {
         File statsFile = new File(statsFilePath);
         if (!statsFile.exists()) {
             try {

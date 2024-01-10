@@ -22,6 +22,7 @@ public class TestWrite {
             kvStores[i].clean();
         }
     }
+
     @Test
     public void jenaBPTWriteTest() {
         JenaBPTKVStore jenaBPTKVStore = new JenaBPTKVStore();
@@ -40,6 +41,6 @@ public class TestWrite {
         TestUtils.measureThreadExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.KeyGenerator(workloadConfiguration), batchSize);
             // kvStore.flush();
-        }, "write with batch size of "+ batchSize);
+        }, "write with batch size of " + batchSize);
     }
 }
