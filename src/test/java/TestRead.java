@@ -31,7 +31,7 @@ public class TestRead {
                 byte[] ToKey = TestUtils.append(getEdgeSPPair(spPair), O);
                 kvStore.rangeQuery(FromKey, ToKey);
             }
-        }, "search");
+        }, kvStore.getClass().getName()+": read");
     }
 
     private byte[] getEdgeSPPair(byte[] spPair) {

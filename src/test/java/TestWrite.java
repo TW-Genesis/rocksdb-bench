@@ -39,6 +39,6 @@ public class TestWrite {
         int batchSize = 100000;
         TestUtils.measureThreadExecutionTime(() -> {
             kvStore.insertBatch(new TestUtils.KeyGenerator(), batchSize);
-        }, "write with batch size of " + batchSize);
+        }, kvStore.getClass().getName()+": write with batch size of " + batchSize);
     }
 }
