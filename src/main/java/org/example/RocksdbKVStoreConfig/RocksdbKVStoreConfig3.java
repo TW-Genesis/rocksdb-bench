@@ -31,12 +31,12 @@ public class RocksdbKVStoreConfig3 implements RocksdbKVStoreConfig {
         BlockBasedTableConfig tableConfig;
         BloomFilter bloomFilterPolicy;
         tableConfig = new BlockBasedTableConfig();
-        bloomFilterPolicy = new BloomFilter(10,false);
+        bloomFilterPolicy = new BloomFilter(10, false);
         tableConfig.setFilterPolicy(bloomFilterPolicy);
         tableConfig.setWholeKeyFiltering(false);
         tableConfig.setCacheIndexAndFilterBlocks(true);
         options.useCappedPrefixExtractor(16);
-        
+
         //Open files
         options.setMaxOpenFiles(2000);
 
@@ -49,5 +49,5 @@ public class RocksdbKVStoreConfig3 implements RocksdbKVStoreConfig {
         env.setBackgroundThreads(4, Priority.LOW);
         return options;
     }
-    
+
 }
