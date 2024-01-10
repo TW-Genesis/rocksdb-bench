@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.rocksdb.RocksDBException;
 
 public class TestRead {
-    private final int numOfSPPairsToRead = 100;
 
     @Test
     public void jenaBPPatternReadTest() {
@@ -24,7 +23,7 @@ public class TestRead {
 
     private void patternReadTest(KVStore kvStore) {
         TestUtils.measureThreadExecutionTime(() -> {
-            TestUtils.RandomSPPairGenerator randomSPPairGenerator = new TestUtils.RandomSPPairGenerator(WorkloadConfiguration.getWorkloadConfiguration(), numOfSPPairsToRead);
+            TestUtils.RandomSPPairGenerator randomSPPairGenerator = new TestUtils.RandomSPPairGenerator(WorkloadConfiguration.numOfSPPairsToRead);
             while (randomSPPairGenerator.hasNext()) {
                 byte[] spPair = randomSPPairGenerator.next();
                 byte[] O = TestUtils.convertToByteArray(0);

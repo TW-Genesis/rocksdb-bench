@@ -36,11 +36,9 @@ public class TestWrite {
     }
 
     private void writeWorkload(KVStore kvStore) {
-        WorkloadConfiguration workloadConfiguration = WorkloadConfiguration.getWorkloadConfiguration();
         int batchSize = 100000;
         TestUtils.measureThreadExecutionTime(() -> {
-            kvStore.insertBatch(new TestUtils.KeyGenerator(workloadConfiguration), batchSize);
-            // kvStore.flush();
+            kvStore.insertBatch(new TestUtils.KeyGenerator(), batchSize);
         }, "write with batch size of " + batchSize);
     }
 }

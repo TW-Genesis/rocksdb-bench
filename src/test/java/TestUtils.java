@@ -8,12 +8,6 @@ import java.util.Random;
 
 
 public class TestUtils {
-    public static void printByteArray(byte[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            System.out.print(arr[i] + " ");
-        }
-        System.out.println();
-    }
 
     public static void measureThreadExecutionTime(Runnable function, String operation) {
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
@@ -24,16 +18,6 @@ public class TestUtils {
         long cpuTimeStampAfter = threadMXBean.getCurrentThreadCpuTime();
         System.out.println(operation + ":");
         System.out.println("cpuTimeSpent            = " + (double) (cpuTimeStampAfter - cpuTimeStampBefore) / 1_000_000_000 + "s");
-    }
-
-    public static void measureWallClockExecutionTime(Runnable function, String operation) {
-        long cpuTimeStampBefore = System.nanoTime();
-
-        function.run();
-
-        long cpuTimeStampAfter = System.nanoTime();
-        System.out.println(operation + ":");
-        System.out.println("wallClockTimeSpent            = " + (double) (cpuTimeStampAfter - cpuTimeStampBefore) / 1_000_000_000 + "s");
     }
 
     public static byte[] convertToByteArray(long value) {
@@ -55,14 +39,12 @@ public class TestUtils {
     //Key[] = [s 8bytes] [p 8bytes] [o 8bytes]
 
     public static class KeyGenerator implements Iterator<KVPair> {
-        private final WorkloadConfiguration workloadConfiguration;
         private int noOfSPPairsLeft;
         private int noOfObjectsLeft;
 
-        public KeyGenerator(WorkloadConfiguration workloadConfiguration) {
-            this.noOfSPPairsLeft = workloadConfiguration.numOfDistinctSPPairs;
+        public KeyGenerator() {
+            this.noOfSPPairsLeft = WorkloadConfiguration.numOfDistinctSPPairs;
             this.noOfObjectsLeft = 0;
-            this.workloadConfiguration = workloadConfiguration;
         }
 
         @Override
@@ -84,7 +66,7 @@ public class TestUtils {
                 S = convertToByteArray(this.noOfSPPairsLeft);
                 P = convertToByteArray(this.noOfSPPairsLeft--);
                 Random random = new Random();
-                this.noOfObjectsLeft = random.nextInt(workloadConfiguration.variance) + 1 + workloadConfiguration.spMatches;
+                this.noOfObjectsLeft = random.nextInt(WorkloadConfiguration.variance) + 1 + WorkloadConfiguration.spMatches;
                 O = convertToByteArray(this.noOfObjectsLeft--);
             }
             byte[] Key = append(append(S, P), O);
@@ -93,12 +75,10 @@ public class TestUtils {
     }
 
     public static class RandomSPPairGenerator implements Iterator<byte[]> {
-        private final WorkloadConfiguration workloadConfiguration;
         private int noOfSPPairsLeft;
 
-        public RandomSPPairGenerator(WorkloadConfiguration workloadConfiguration, int numOfPairsToGenerate) {
+        public RandomSPPairGenerator(int numOfPairsToGenerate) {
             this.noOfSPPairsLeft = numOfPairsToGenerate;
-            this.workloadConfiguration = workloadConfiguration;
         }
 
         @Override
@@ -112,7 +92,7 @@ public class TestUtils {
                 throw new RuntimeException("no SPPairs left");
             }
             Random random = new Random();
-            byte[] S = convertToByteArray(random.nextInt(workloadConfiguration.numOfDistinctSPPairs) + 1);
+            byte[] S = convertToByteArray(random.nextInt(WorkloadConfiguration.numOfDistinctSPPairs) + 1);
             this.noOfSPPairsLeft--;
             return append(S, S);
         }
