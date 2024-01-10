@@ -15,7 +15,7 @@ public class RocksdbKVStore implements KVStore {
     private final String db_path = "/home/e4r/test-database/rocksdb-java";
     private final Options options;
     private final Statistics statistics;
-    private final RocksDB db;
+    private final RocksDB rocksDB;
 
     public RocksdbKVStore(RocksdbKVStoreConfig rocksdbKVStoreConfig) throws RocksDBException {
         RocksDB.loadLibrary();
@@ -23,7 +23,7 @@ public class RocksdbKVStore implements KVStore {
         this.statistics = new Statistics();
         this.options.setStatistics(statistics);
         this.options.setComparator(BuiltinComparator.BYTEWISE_COMPARATOR);
-        this.db = RocksDB.open(this.options, db_path);
+        this.rocksDB = RocksDB.open(this.options, db_path);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class RocksdbKVStore implements KVStore {
             if (value == null) {
                 value = new byte[0];
             }
-            db.put(key, value);
+            rocksDB.put(key, value);
         } catch (RocksDBException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +41,7 @@ public class RocksdbKVStore implements KVStore {
     @Override
     public byte[] find(byte[] key) {
         try {
-            byte[] value = db.get(key);
+            byte[] value = rocksDB.get(key);
             if (value.length == 0) {
                 value = null;
             }
@@ -53,7 +53,7 @@ public class RocksdbKVStore implements KVStore {
 
     @Override
     public void clean() {
-        db.close();
+        rocksDB.close();
         try {
             RocksDB.destroyDB(db_path, options);
         } catch (RocksDBException e) {
@@ -80,7 +80,7 @@ public class RocksdbKVStore implements KVStore {
                     }
                 }
                 try {
-                    db.write(new WriteOptions(), batch);
+                    rocksDB.write(new WriteOptions(), batch);
                 } catch (RocksDBException e) {
                     throw new RuntimeException(e);
                 }
@@ -93,7 +93,7 @@ public class RocksdbKVStore implements KVStore {
     @Override
     public void readBatch(List<byte[]> keys) {
         try {
-            db.multiGetAsList(keys);
+            rocksDB.multiGetAsList(keys);
         } catch (RocksDBException e) {
             throw new RuntimeException(e);
         }
@@ -104,7 +104,7 @@ public class RocksdbKVStore implements KVStore {
         ReadOptions readOptions = new ReadOptions();
         readOptions.setFillCache(false); // Optional: Set cache behavior
 
-        RocksIterator iterator = db.newIterator(readOptions);
+        RocksIterator iterator = rocksDB.newIterator(readOptions);
         iterator.seek(minKey);
 
         while (iterator.isValid()) {
